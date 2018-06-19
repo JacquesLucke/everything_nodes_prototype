@@ -33,6 +33,7 @@ class NodeDriver(bpy.types.PropertyGroup):
         return str(hash(str(data)))
 
 def evaluate_drivers():
+    # TODO: for some reason it crashes on bpy.context.scene.collection sometimes
     for object in bpy.context.scene.collection.all_objects:
         evaluate_drivers_on_object(object)
 
