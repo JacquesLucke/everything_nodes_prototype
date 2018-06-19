@@ -3,20 +3,8 @@ from bpy.props import *
 from .. trees import DataFlowGroupTree
 from .. utils.objects import get_objects_in_scene
 
-class NodeDriver(bpy.types.PropertyGroup):
-    def is_function(self, tree):
-        return isinstance(tree, DataFlowGroupTree) and tree.is_valid_function
-
-    path = StringProperty()
-    data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
+class DependencyChecker:
     last_dependency_state = StringProperty()
-
-    def get_dependencies(self):
-        signature = self.data_flow_group.signature
-        if signature.match_input(["Object"]):
-            return self.data_flow_group.get_dependencies({signature.inputs[0] : self.id_data})
-        else:
-            return self.data_flow_group.get_dependencies({})
 
     @property
     def dependencies_changed_since_last_check(self):
@@ -32,6 +20,25 @@ class NodeDriver(bpy.types.PropertyGroup):
             data.append(hash(dependency))
             data.append(dependency.evaluate())
         return str(hash(str(data)))
+
+    def get_dependencies(self):
+        raise NotImplementedError()
+
+class NodeDriver(DependencyChecker, bpy.types.PropertyGroup):
+    def is_function(self, tree):
+        return isinstance(tree, DataFlowGroupTree) and tree.is_valid_function
+
+    path = StringProperty()
+    data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
+
+    def get_dependencies(self):
+        signature = self.data_flow_group.signature
+        if signature.match_input(["Object"]):
+            return self.data_flow_group.get_dependencies({signature.inputs[0] : self.id_data})
+        else:
+            return self.data_flow_group.get_dependencies({})
+
+
 
 def evaluate_drivers():
     for object in get_objects_in_scene(bpy.context.scene):

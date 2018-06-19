@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 from bpy.props import *
+from . driver import DependencyChecker
 from .. trees import DataFlowGroupTree
 from .. utils.objects import get_objects_in_scene
 
@@ -9,7 +10,7 @@ modifier_type_items = [
     ("OFFSET", "Offset", "")
 ]
 
-class NodeMeshModifier(bpy.types.PropertyGroup):
+class NodeMeshModifier(DependencyChecker, bpy.types.PropertyGroup):
     def is_function(self, tree):
         return isinstance(tree, DataFlowGroupTree) and tree.is_valid_function
 
@@ -20,6 +21,9 @@ class NodeMeshModifier(bpy.types.PropertyGroup):
     enabled = BoolProperty(name = "Enabled", default = False)
     data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
 
+    def get_dependencies(self):
+        return self.data_flow_group.get_dependencies({})
+
 def evaluate_modifiers():
     for object in get_objects_in_scene(bpy.context.scene):
         if object.type == "MESH" and object.data.node_modifier.enabled:
@@ -27,6 +31,9 @@ def evaluate_modifiers():
 
 def evaluate_modifier_on_mesh(mesh):
     modifier = mesh.node_modifier
+    if not modifier.dependencies_changed_since_last_check:
+        return
+
     group = modifier.data_flow_group
     if group is None:
         return
