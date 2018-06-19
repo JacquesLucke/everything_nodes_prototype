@@ -11,15 +11,22 @@ class ObjectTransformsNode(FunctionalNode, bpy.types.Node):
         self.new_output("en_VectorSocket", "Location", "location")
         self.new_output("en_VectorSocket", "Scale", "scale")
 
-    def get_code(self):
-        yield "if object is None:"
-        yield "    location = mathutils.Vector((0, 0, 0))"
-        yield "    scale = mathutils.Vector((1, 1, 1))"
-        yield "else:"
-        yield "    location = object.location.copy()"
-        yield "    scale = object.scale.copy()"
+    def get_code(self, required):
+        needsLocation = self.outputs["Location"] in required
+        needsScale = self.outputs["Scale"] in required
+        if not any((needsLocation, needsScale)):
+            return
 
-    def get_external_dependencies(self, external_values):
+        yield "if object is None:"
+        if needsLocation: yield "    location = mathutils.Vector((0, 0, 0))"
+        if needsScale:    yield "    scale = mathutils.Vector((1, 1, 1))"
+        yield "else:"
+        if needsLocation: yield "    location = object.location.copy()"
+        if needsScale:    yield "    scale = object.scale.copy()"
+
+    def get_external_dependencies(self, external_values, required):
         for object in external_values[self.inputs[0]]:
-            yield Dependency(object, "location")
-            yield Dependency(object, "scale")
+            if self.outputs["Location"] in required:
+                yield Dependency(object, "location")
+            if self.outputs["Scale"] in required:
+                yield Dependency(object, "scale")

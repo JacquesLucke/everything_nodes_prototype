@@ -22,8 +22,8 @@ class FloatMathNode(FunctionalNode, bpy.types.Node):
     def draw(self, layout):
         layout.prop(self, "operator", text = "")
 
-    def get_code(self):
+    def get_code(self, required):
         if self.operator == "ADD":
             yield "result = a + b"
         elif self.operator == "MULTIPLY":
-            yield "result = a * b" 
+            yield "result = a * b"

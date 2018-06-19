@@ -12,5 +12,5 @@ class CombineVectorNode(FunctionalNode, bpy.types.Node):
 
         self.new_output("en_VectorSocket", "Vector", "vector")
 
-    def get_code(self):
+    def get_code(self, required):
         yield "vector = mathutils.Vector((x, y, z))"

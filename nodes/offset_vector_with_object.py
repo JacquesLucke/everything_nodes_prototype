@@ -16,7 +16,7 @@ class OffsetVectorWithObjectNode(FunctionalNode, bpy.types.Node):
     def draw(self, layout):
         layout.prop(self, "offset_object", text = "")
 
-    def get_code(self):
+    def get_code(self, required):
         yield "vector_out = self.execute(vector_in)"
 
     def execute(self, vector):
@@ -25,6 +25,6 @@ class OffsetVectorWithObjectNode(FunctionalNode, bpy.types.Node):
         else:
             return vector + self.offset_object.location
 
-    def get_external_dependencies(self, external_values):
+    def get_external_dependencies(self, external_values, required):
         if self.offset_object is not None:
             yield Dependency(self.offset_object, "location")

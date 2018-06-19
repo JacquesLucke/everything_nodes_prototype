@@ -1,6 +1,7 @@
+import re
 import bpy
+from functools import lru_cache
 from . base import NodeTree
-from .. execution_code import generate_function_code, get_new_socket_name
 from .. base_socket_types import ExternalDataFlowSocket
 
 function_by_tree = {}
@@ -101,6 +102,7 @@ def iter_function_lines(tree):
     yield "import bpy, mathutils"
     yield f"nodes = bpy.data.node_groups[{repr(tree.name)}].nodes"
     signature = tree.signature
+    required_sockets = find_required_sockets(tree.graph, signature.inputs, signature.outputs)
 
     variables = {}
     for i, socket in enumerate(signature.inputs):
@@ -109,7 +111,8 @@ def iter_function_lines(tree):
     input_string = ", ".join(variables[socket] for socket in signature.inputs)
     yield f"def main({input_string}):"
 
-    for line in generate_function_code(tree.graph, signature.outputs, variables, generate_code_for_unlinked_input, generate_self_expression):
+    for line in generate_function_code(tree.graph, signature.outputs, required_sockets, variables,
+            generate_code_for_unlinked_input, generate_self_expression):
         yield "    " + line
 
     output_string = ", ".join(variables[socket] for socket in signature.outputs)
@@ -153,7 +156,7 @@ def find_possible_external_values(graph, values):
         for socket in node.sockets:
             find_possible_values(socket)
 
-def find_dependencies(graph, external_values, input_sockets, output_sockets):
+def find_dependencies(graph, required_sockets, external_values, input_sockets, output_sockets):
     dependencies = set()
     found_sockets = set(input_sockets)
 
@@ -164,9 +167,7 @@ def find_dependencies(graph, external_values, input_sockets, output_sockets):
 
         if socket.is_output:
             node = graph.get_node_by_socket(socket)
-            deps = list(node.get_external_dependencies(external_values))
-            print(deps)
-            dependencies.update(deps)
+            dependencies.update(node.get_external_dependencies(external_values, required_sockets))
             for input_socket in node.inputs:
                 find_for(input_socket)
         else:
@@ -177,3 +178,73 @@ def find_dependencies(graph, external_values, input_sockets, output_sockets):
         find_for(socket)
 
     return dependencies
+
+def find_required_sockets(graph, input_sockets, output_sockets):
+    required_sockets = set()
+
+    def find_for(socket):
+        if socket in required_sockets:
+            return
+        required_sockets.add(socket)
+
+        if socket in input_sockets:
+            return
+
+        if socket.is_output:
+            node = graph.get_node_by_socket(socket)
+            for input_socket in node.get_required_inputs([socket]):
+                find_for(input_socket)
+        else:
+            for linked_socket in graph.get_linked_sockets(socket):
+                find_for(linked_socket)
+
+    for socket in output_sockets:
+        find_for(socket)
+
+    return required_sockets
+
+def generate_function_code(graph, output_sockets, required_sockets, variables,
+        generate_unlinked_input, generate_self_expression):
+    def calculate_socket(socket):
+        if socket in variables:
+            return
+
+        if socket.is_output:
+            node = graph.get_node_by_socket(socket)
+
+            for input_socket in node.inputs:
+                yield from calculate_socket(input_socket)
+
+            for output_socket in node.outputs:
+                variables[output_socket] = get_new_socket_name(graph, output_socket)
+
+            yield ""
+            yield "# " + repr(node.name)
+            for line in node.get_code(required_sockets):
+                for socket in node.sockets:
+                    line = replace_variable_name(line, socket.identifier, variables[socket])
+                line = replace_variable_name(line, "self", generate_self_expression(graph, node))
+                yield line
+        else:
+            linked_sockets = graph.get_linked_sockets(socket)
+            if len(linked_sockets) == 0:
+                yield from generate_unlinked_input(graph, socket, variables)
+            elif len(linked_sockets) == 1:
+                source_socket = next(iter(linked_sockets))
+                yield from calculate_socket(source_socket)
+                variables[socket] = variables[source_socket]
+
+    for socket in output_sockets:
+        yield from calculate_socket(socket)
+
+counter = 0
+
+def get_new_socket_name(graph, socket):
+    global counter
+    counter += 1
+    return "_" + str(counter)
+
+@lru_cache(maxsize = 2**15)
+def replace_variable_name(code, oldName, newName):
+    pattern = r"([^\.\"']|^)\b{}\b".format(oldName)
+    return re.sub(pattern, r"\1{}".format(newName), code)

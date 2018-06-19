@@ -9,7 +9,7 @@ class GetObjectParentNode(FunctionalNode, bpy.types.Node):
         self.new_input("en_ObjectSocket", "Object", "object")
         self.new_output("en_ObjectSocket", "Object", "parent")
 
-    def get_code(self):
+    def get_code(self, required):
         yield "parent = object.parent if object is not None else None"
 
     def execute_external(self, possible_values_per_socket):

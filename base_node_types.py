@@ -37,12 +37,35 @@ class ImperativeNode(Node):
     pass
 
 class FunctionalNode(Node):
-    def get_code(self):
+    def get_code(self, required):
+        """
+        Yields lines of Python code that execute the node.
+        The identifiers of input and output sockets can be used.
+        Also "self" is allowed to reference the node.
+        """
         raise NotImplementedError()
 
-    def get_external_dependencies(self, external_values_per_socket):
+    def get_external_dependencies(self, external_values_per_socket, required):
+        """
+        Given the possible input values for external sockets (e.g. objects),
+        output the necessary dependencies to calculate the outputs
+        """
         return
         yield
+
+    def execute_external(self, possible_values_per_socket):
+        """
+        Given the possible input values for external sockets,
+        output the possible values for external output sockets.
+        """
+        return {}
+
+    def get_required_inputs(self, outputs):
+        """
+        Output a (sub)set of the input nodes, that are required to
+        calculate the outputs.
+        """
+        return set(self.inputs)
 
 class DeclarativeNode(Node):
     pass

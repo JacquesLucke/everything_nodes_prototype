@@ -12,5 +12,5 @@ class SeparateVectorNode(FunctionalNode, bpy.types.Node):
         self.new_output("en_FloatSocket", "Y", "y")
         self.new_output("en_FloatSocket", "Z", "z")
 
-    def get_code(self):
+    def get_code(self, required):
         yield "x, y, z = vector"
