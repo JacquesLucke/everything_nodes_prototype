@@ -18,7 +18,7 @@ class FunctionalPropertyDriver(bpy.types.PropertyGroup):
             return self.data_flow_group.get_dependencies({})
 
 def evaluate_drivers():
-    for object in bpy.context.scene.objects:
+    for object in bpy.context.scene.collection.all_objects:
         evaluate_drivers_on_object(object)
 
 def evaluate_drivers_on_object(object):
