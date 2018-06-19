@@ -3,12 +3,14 @@ from . execute_callback import ExecuteCallbackOperator
 from . socket_type_chooser import ChooseSocketTypeOperator
 from . analyse_tree import AnalyseTreeOperator
 from . add_driver import AddDriverOperator
+from . modal_runner import ModalRunnerOperator
 
 operators = [
     AnalyseTreeOperator,
     ExecuteCallbackOperator,
     ChooseSocketTypeOperator,
-    AddDriverOperator
+    AddDriverOperator,
+    ModalRunnerOperator
 ]
 
 def register():

@@ -21,3 +21,4 @@ class DataFlowGroupInfoPanel(bpy.types.Panel):
             layout.label(str(tree.signature))
 
         layout.operator("en.analyse_tree")
+        layout.operator("en.modal_runner")
