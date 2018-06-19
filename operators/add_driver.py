@@ -9,5 +9,5 @@ class AddDriverOperator(bpy.types.Operator):
         return context.active_object is not None
 
     def execute(self, context):
-        context.active_object.drivers.add()
+        context.active_object.node_drivers.add()
         return {"FINISHED"}

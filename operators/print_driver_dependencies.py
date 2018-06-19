@@ -9,10 +9,10 @@ class PrintDriverDependenciesOperator(bpy.types.Operator):
 
     def execute(self, context):
         object = context.active_object
-        driver = object.drivers[self.index]
+        driver = object.node_drivers[self.index]
         print(f"Driver: {repr(driver.path)} on {repr(object.name)}")
 
         for dependency in driver.get_dependencies():
-            print(f"  {repr(dependency.attribute)} of {repr(dependency.object.name)}")
+            print(f"  {dependency}")
 
         return {"FINISHED"}

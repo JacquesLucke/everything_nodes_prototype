@@ -1,6 +1,6 @@
 import bpy
 from .. base_node_types import FunctionalNode
-from .. dependencies import Dependency
+from .. dependencies import AttributeDependency
 
 class ObjectTransformsNode(FunctionalNode, bpy.types.Node):
     bl_idname = "en_ObjectTransformsNode"
@@ -26,7 +26,9 @@ class ObjectTransformsNode(FunctionalNode, bpy.types.Node):
 
     def get_external_dependencies(self, external_values, required):
         for object in external_values[self.inputs[0]]:
+            if object is None:
+                continue
             if self.outputs["Location"] in required:
-                yield Dependency(object, "location")
+                yield AttributeDependency(object, "location")
             if self.outputs["Scale"] in required:
-                yield Dependency(object, "scale")
+                yield AttributeDependency(object, "scale")

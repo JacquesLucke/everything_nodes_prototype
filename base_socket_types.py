@@ -26,6 +26,16 @@ class DataFlowSocket(Socket):
     def get_value(self):
         raise NotImplementedError()
 
+    def internal_data_changed(self, context = None):
+        self.id_data.internal_data_socket_changed()
+
+    def external_data_changed(self, context = None):
+        self.id_data.external_data_socket_changed()
+
+    def get_dependencies(self):
+        return
+        yield
+
 class InternalDataFlowSocket(DataFlowSocket):
     pass
 

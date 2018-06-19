@@ -1,16 +1,25 @@
 class Dependency:
-    def __init__(self, object, attribute):
-        self.object = object
-        self.attribute = attribute
-
     def __hash__(self):
-        return hash((self.object, self.attribute))
-
-    def __eq__(self, other):
-        return self.object == other.object and self.attribute == other.attribute
-
-    def __repr__(self):
-        return f"<Object: {repr(self.object)}, {repr(self.attribute)}>"
+        raise NotImplementedError()
 
     def evaluate(self):
-        return self.object.path_resolve(self.attribute)
+        raise NotImplementedError()
+
+class AttributeDependency:
+    def __init__(self, owner, path):
+        if owner is None:
+            raise Exception("dependency owner must not be None")
+        self.owner = owner
+        self.path = path
+
+    def __hash__(self):
+        return hash((self.owner, self.path))
+
+    def __eq__(self, other):
+        return self.owner == other.owner and self.path == other.path
+
+    def __repr__(self):
+        return f"<Owner: {repr(self.owner)}, Path: {repr(self.path)}>"
+
+    def evaluate(self):
+        return self.owner.path_resolve(self.path)

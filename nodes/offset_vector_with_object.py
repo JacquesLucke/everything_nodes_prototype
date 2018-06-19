@@ -1,7 +1,7 @@
 import bpy
 from bpy.props import *
 from .. base_node_types import FunctionalNode
-from .. dependencies import Dependency
+from .. dependencies import AttributeDependency
 
 class OffsetVectorWithObjectNode(FunctionalNode, bpy.types.Node):
     bl_idname = "en_OffsetVectorWithObjectNode"
@@ -27,4 +27,4 @@ class OffsetVectorWithObjectNode(FunctionalNode, bpy.types.Node):
 
     def get_external_dependencies(self, external_values, required):
         if self.offset_object is not None:
-            yield Dependency(self.offset_object, "location")
+            yield AttributeDependency(self.offset_object, "location")

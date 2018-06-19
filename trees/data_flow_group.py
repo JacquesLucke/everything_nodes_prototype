@@ -11,6 +11,10 @@ class FunctionDataCache:
     def __init__(self):
         self.function = None
         self.signature = None
+        self.property_state = 0
+        self.reset_dependencies()
+
+    def reset_dependencies(self):
         self.dependencies = dict()
 
 cache = defaultdict(FunctionDataCache)
@@ -23,6 +27,12 @@ class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
     def update(self):
         super().update()
         self.reset_cache()
+
+    def internal_data_socket_changed(self):
+        pass
+
+    def external_data_socket_changed(self):
+        self.cache.reset_dependencies()
 
     @property
     def is_valid_function(self):
@@ -194,8 +204,11 @@ def find_dependencies(graph, required_sockets, external_values, input_sockets, o
             for input_socket in node.inputs:
                 find_for(input_socket)
         else:
-            for linked_socket in graph.get_linked_sockets(socket):
-                find_for(linked_socket)
+            linked_sockets = graph.get_linked_sockets(socket)
+            if len(linked_sockets) == 0:
+                dependencies.update(socket.get_dependencies())
+            elif len(linked_sockets) == 1:
+                find_for(next(iter(linked_sockets)))
 
     for socket in output_sockets:
         find_for(socket)
