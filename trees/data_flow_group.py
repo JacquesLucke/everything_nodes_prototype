@@ -70,6 +70,16 @@ class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
     def update_function(self):
         function_by_tree[self] = generate_function(self)
 
+    def get_dependencies(self, external_inputs):
+        signature = self.signature
+
+        possible_external_values = {socket : {value} for socket, value in external_inputs.items()}
+        find_possible_external_values(self.graph, possible_external_values)
+
+        required_sockets = find_required_sockets(self.graph, signature.inputs, signature.outputs)
+        dependencies = find_dependencies(self.graph, required_sockets, possible_external_values, signature.inputs, signature.outputs)
+        return dependencies
+
 class FunctionSignature:
     def __init__(self, inputs, outputs):
         self.inputs = inputs

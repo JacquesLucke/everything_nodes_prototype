@@ -3,11 +3,6 @@ from bpy.props import *
 from .. trees import DataFlowGroupTree
 from . base import ExecutionContext
 
-
-class DriverExecutionContext(ExecutionContext):
-    pass
-
-
 class FunctionalPropertyDriver(bpy.types.PropertyGroup):
     def is_function(self, tree):
         return isinstance(tree, DataFlowGroupTree) and tree.is_valid_function
@@ -15,17 +10,19 @@ class FunctionalPropertyDriver(bpy.types.PropertyGroup):
     path = StringProperty()
     data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
 
-class FunctionalObjectDrivers(bpy.types.PropertyGroup):
-    property_drivers = CollectionProperty(type = FunctionalPropertyDriver)
-
-
+    def get_dependencies(self):
+        signature = self.data_flow_group.signature
+        if signature.match_input(["Object"]):
+            return self.data_flow_group.get_dependencies({signature.inputs[0] : self.id_data})
+        else:
+            return self.data_flow_group.get_dependencies({})
 
 def evaluate_drivers():
     for object in bpy.context.scene.objects:
         evaluate_drivers_on_object(object)
 
 def evaluate_drivers_on_object(object):
-    for driver in object.drivers.property_drivers:
+    for driver in object.drivers:
         group = driver.data_flow_group
         if group is None:
             continue
@@ -52,14 +49,13 @@ def get_data_type(path):
 
 
 property_groups = [
-    FunctionalPropertyDriver,
-    FunctionalObjectDrivers
+    FunctionalPropertyDriver
 ]
 
 def register():
     for cls in property_groups:
         bpy.utils.register_class(cls)
-    bpy.types.Object.drivers = PointerProperty(type = FunctionalObjectDrivers)
+    bpy.types.Object.drivers = CollectionProperty(type = FunctionalPropertyDriver)
 
 def unregister():
     del bpy.types.Object.drivers

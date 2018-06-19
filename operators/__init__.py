@@ -4,13 +4,15 @@ from . socket_type_chooser import ChooseSocketTypeOperator
 from . analyse_tree import AnalyseTreeOperator
 from . add_driver import AddDriverOperator
 from . modal_runner import ModalRunnerOperator
+from . print_driver_dependencies import PrintDriverDependenciesOperator
 
 operators = [
     AnalyseTreeOperator,
     ExecuteCallbackOperator,
     ChooseSocketTypeOperator,
     AddDriverOperator,
-    ModalRunnerOperator
+    ModalRunnerOperator,
+    PrintDriverDependenciesOperator
 ]
 
 def register():

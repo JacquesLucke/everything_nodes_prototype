@@ -11,7 +11,9 @@ class DriverPanel(bpy.types.Panel):
         layout = self.layout
         layout.operator("en.add_driver")
 
-        for driver in context.active_object.drivers.property_drivers:
+        for i, driver in enumerate(context.active_object.drivers):
             row = layout.row(align = True)
             row.prop(driver, "path", text = "", icon = "RNA")
             row.prop(driver, "data_flow_group", text = "")
+            props = row.operator("en.print_driver_dependencies", text = "", icon = "CONSTRAINT")
+            props.index = i
