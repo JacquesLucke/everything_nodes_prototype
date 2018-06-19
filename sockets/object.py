@@ -1,8 +1,8 @@
 import bpy
 from bpy.props import *
-from .. base_socket_types import DataFlowSocket
+from .. base_socket_types import ExternalDataFlowSocket
 
-class ObjectSocket(DataFlowSocket, bpy.types.NodeSocket):
+class ObjectSocket(ExternalDataFlowSocket, bpy.types.NodeSocket):
     bl_idname = "en_ObjectSocket"
     data_type = "Object"
     color = (0, 0, 0, 1)

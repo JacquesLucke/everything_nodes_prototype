@@ -1,8 +1,8 @@
 import bpy
 from bpy.props import *
-from .. base_socket_types import DataFlowSocket
+from .. base_socket_types import InternalDataFlowSocket
 
-class FloatSocket(DataFlowSocket, bpy.types.NodeSocket):
+class FloatSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     bl_idname = "en_FloatSocket"
     data_type = "Float"
     color = (0, 0, 0, 1)

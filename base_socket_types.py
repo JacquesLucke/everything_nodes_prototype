@@ -26,6 +26,18 @@ class DataFlowSocket(Socket):
     def get_value(self):
         raise NotImplementedError()
 
+    def get_external_dependencies(self):
+        return set()
+
+    def execute_external(self, possible_values_per_socket):
+        raise NotImplementedError()
+
+class InternalDataFlowSocket(DataFlowSocket):
+    pass
+
+class ExternalDataFlowSocket(DataFlowSocket):
+    pass
+
 class ControlFlowSocket(Socket):
     pass
 

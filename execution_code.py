@@ -1,7 +1,8 @@
 import re
 from functools import lru_cache
 
-def generate_function_code(graph, output_sockets, variables, generate_unlinked_input):
+def generate_function_code(graph, output_sockets, variables,
+        generate_unlinked_input, generate_self_expression):
     def calculate_socket(socket):
         if socket in variables:
             return
@@ -18,15 +19,16 @@ def generate_function_code(graph, output_sockets, variables, generate_unlinked_i
             for line in node.get_code():
                 for socket in node.sockets:
                     line = replace_variable_name(line, socket.identifier, variables[socket])
+                line = replace_variable_name(line, "self", generate_self_expression(graph, node))
                 yield line
         else:
             linked_sockets = graph.get_linked_sockets(socket)
             if len(linked_sockets) == 0:
                 yield from generate_unlinked_input(graph, socket, variables)
             elif len(linked_sockets) == 1:
-                input_socket = next(iter(linked_sockets))
-                yield from calculate_socket(input_socket)
-                variables[socket] = variables[input_socket]
+                source_socket = next(iter(linked_sockets))
+                yield from calculate_socket(source_socket)
+                variables[socket] = variables[source_socket]
 
     for socket in output_sockets:
         yield from calculate_socket(socket)

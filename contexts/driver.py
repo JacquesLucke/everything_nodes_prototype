@@ -1,6 +1,12 @@
 import bpy
 from bpy.props import *
 from .. trees import DataFlowGroupTree
+from . base import ExecutionContext
+
+
+class DriverExecutionContext(ExecutionContext):
+    pass
+
 
 class FunctionalPropertyDriver(bpy.types.PropertyGroup):
     def is_function(self, tree):

@@ -1,6 +1,7 @@
 import bpy
 from . base import NodeTree
 from .. execution_code import generate_function_code, get_new_socket_name
+from .. base_socket_types import ExternalDataFlowSocket
 
 function_by_tree = {}
 
@@ -11,7 +12,7 @@ class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
 
     def update(self):
         super().update()
-        self.update_function()
+        self.reset_function()
 
     @property
     def is_valid_function(self):
@@ -61,6 +62,10 @@ class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
             self.update_function()
         return function_by_tree[self]
 
+    def reset_function(self):
+        if self in function_by_tree:
+            del function_by_tree[self]
+
     def update_function(self):
         function_by_tree[self] = generate_function(self)
 
@@ -94,6 +99,7 @@ def generate_function(tree):
 
 def iter_function_lines(tree):
     yield "import bpy, mathutils"
+    yield f"nodes = bpy.data.node_groups[{repr(tree.name)}].nodes"
     signature = tree.signature
 
     variables = {}
@@ -103,7 +109,7 @@ def iter_function_lines(tree):
     input_string = ", ".join(variables[socket] for socket in signature.inputs)
     yield f"def main({input_string}):"
 
-    for line in generate_function_code(tree.graph, signature.outputs, variables, generate_code_for_unlinked_input):
+    for line in generate_function_code(tree.graph, signature.outputs, variables, generate_code_for_unlinked_input, generate_self_expression):
         yield "    " + line
 
     output_string = ", ".join(variables[socket] for socket in signature.outputs)
@@ -113,6 +119,61 @@ def generate_code_for_unlinked_input(graph, socket, variables):
     name = get_new_socket_name(graph, socket)
     node = graph.get_node_by_socket(socket)
     variables[socket] = name
-    yield "{} = bpy.data.node_groups['{}'].nodes['{}'].inputs[{}].get_value()".format(
-        name, socket.id_data.name, node.name, socket.get_index(node)
+    yield "{} = nodes['{}'].inputs[{}].get_value()".format(
+        name, node.name, socket.get_index(node)
     )
+
+def generate_self_expression(graph, node):
+    return f"nodes[{repr(node.name)}]"
+
+
+def find_possible_external_values(graph, values):
+    def find_possible_values(socket):
+        if socket in values:
+            return
+        if not isinstance(socket, ExternalDataFlowSocket):
+            return
+
+        if socket.is_output:
+            node = graph.get_node_by_socket(socket)
+            for input_socket in node.inputs:
+                if isinstance(input_socket, ExternalDataFlowSocket):
+                    find_possible_values(input_socket)
+            values.update(node.execute_external(values))
+        else:
+            linked_sockets = graph.get_linked_sockets(socket)
+            if len(linked_sockets) == 0:
+                values[socket] = {socket.get_value()}
+            elif len(linked_sockets) == 1:
+                source_socket = next(iter(linked_sockets))
+                find_possible_values(source_socket)
+                values[socket] = values[source_socket]
+
+    for node in graph.iter_nodes():
+        for socket in node.sockets:
+            find_possible_values(socket)
+
+def find_dependencies(graph, external_values, input_sockets, output_sockets):
+    dependencies = set()
+    found_sockets = set(input_sockets)
+
+    def find_for(socket):
+        if socket in found_sockets:
+            return
+        found_sockets.add(socket)
+
+        if socket.is_output:
+            node = graph.get_node_by_socket(socket)
+            deps = list(node.get_external_dependencies(external_values))
+            print(deps)
+            dependencies.update(deps)
+            for input_socket in node.inputs:
+                find_for(input_socket)
+        else:
+            for linked_socket in graph.get_linked_sockets(socket):
+                find_for(linked_socket)
+
+    for socket in output_sockets:
+        find_for(socket)
+
+    return dependencies

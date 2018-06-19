@@ -40,5 +40,9 @@ class FunctionalNode(Node):
     def get_code(self):
         raise NotImplementedError()
 
+    def get_external_dependencies(self, external_values_per_socket):
+        return
+        yield
+
 class DeclarativeNode(Node):
     pass

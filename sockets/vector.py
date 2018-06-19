@@ -1,8 +1,8 @@
 import bpy
 from bpy.props import *
-from .. base_socket_types import DataFlowSocket
+from .. base_socket_types import InternalDataFlowSocket
 
-class VectorSocket(DataFlowSocket, bpy.types.NodeSocket):
+class VectorSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     bl_idname = "en_VectorSocket"
     data_type = "Vector"
     color = (0, 0, 0, 1)

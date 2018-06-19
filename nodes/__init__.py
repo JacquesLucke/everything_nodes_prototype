@@ -5,6 +5,8 @@ from . float_math import FloatMathNode
 from . combine_vector import CombineVectorNode
 from . separate_vector import SeparateVectorNode
 from . object_transforms import ObjectTransformsNode
+from . offset_vector_with_object import OffsetVectorWithObjectNode
+from . get_parent_object import GetObjectParentNode
 
 node_classes = [
     GroupInputNode,
@@ -12,7 +14,9 @@ node_classes = [
     FloatMathNode,
     CombineVectorNode,
     SeparateVectorNode,
-    ObjectTransformsNode
+    ObjectTransformsNode,
+    OffsetVectorWithObjectNode,
+    GetObjectParentNode
 ]
 
 def register():

@@ -16,7 +16,7 @@ class ModalRunnerOperator(bpy.types.Operator):
             evaluate_drivers()
 
         if event.type == "ESC":
-            self.finish()
+            self.finish(context)
             return {"CANCELLED"}
         return {"PASS_THROUGH"}
 

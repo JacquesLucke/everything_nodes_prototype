@@ -14,6 +14,8 @@ def draw_menu(self, context):
     insertNode(layout, "en_CombineVectorNode", "Combine Vector")
     insertNode(layout, "en_SeparateVectorNode", "Separate Vector")
     insertNode(layout, "en_ObjectTransformsNode", "Object Transforms")
+    insertNode(layout, "en_OffsetVectorWithObjectNode", "Offset Vector with Object")
+    insertNode(layout, "en_GetObjectParentNode", "Get Object Parent")
 
 def insertNode(layout, type, text, settings = {}, icon = "NONE"):
     operator = layout.operator("node.add_node", text = text, icon = icon)
