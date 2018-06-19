@@ -1,5 +1,5 @@
 import bpy
-from .. node_parser.execution_code import generate_function_code, get_new_socket_name
+from .. execution_code import generate_function_code, get_new_socket_name
 
 class AnalyseTreeOperator(bpy.types.Operator):
     bl_idname = "en.analyse_tree"

@@ -1,4 +1,4 @@
-from .. node_parser import NodeGraph
+from .. node_graph import NodeGraph
 
 graph_by_tree = {}
 
