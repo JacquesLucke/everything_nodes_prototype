@@ -2,6 +2,7 @@ import bpy
 import bmesh
 from bpy.props import *
 from .. trees import DataFlowGroupTree
+from .. utils.objects import get_objects_in_scene
 
 modifier_type_items = [
     ("SINGLE_POINT", "Single Point", ""),
@@ -20,7 +21,7 @@ class NodeMeshModifier(bpy.types.PropertyGroup):
     data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
 
 def evaluate_modifiers():
-    for object in bpy.context.scene.collection.all_objects:
+    for object in get_objects_in_scene(bpy.context.scene):
         if object.type == "MESH" and object.data.node_modifier.enabled:
             evaluate_modifier_on_mesh(object.data)
 

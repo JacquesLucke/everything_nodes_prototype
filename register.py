@@ -17,7 +17,7 @@ def register():
     ui.register()
 
 def unregister():
-    ui.register()
+    ui.unregister()
     menu.unregister()
     nodes.unregister()
     trees.unregister()

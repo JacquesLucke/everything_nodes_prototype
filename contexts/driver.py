@@ -1,6 +1,7 @@
 import bpy
 from bpy.props import *
 from .. trees import DataFlowGroupTree
+from .. utils.objects import get_objects_in_scene
 
 class NodeDriver(bpy.types.PropertyGroup):
     def is_function(self, tree):
@@ -33,8 +34,7 @@ class NodeDriver(bpy.types.PropertyGroup):
         return str(hash(str(data)))
 
 def evaluate_drivers():
-    # TODO: for some reason it crashes on bpy.context.scene.collection sometimes
-    for object in bpy.context.scene.collection.all_objects:
+    for object in get_objects_in_scene(bpy.context.scene):
         evaluate_drivers_on_object(object)
 
 def evaluate_drivers_on_object(object):
