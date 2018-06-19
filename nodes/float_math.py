@@ -12,7 +12,7 @@ class FloatMathNode(FunctionalNode, bpy.types.Node):
     bl_label = "Float Math"
 
     operator = EnumProperty(name = "Operator", default = "ADD",
-        items = operatorItems)
+        items = operatorItems, update = FunctionalNode.code_changed)
 
     def create(self):
         self.new_input("en_FloatSocket", "A", "a")

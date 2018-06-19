@@ -1,5 +1,6 @@
 import bpy
 from .. contexts.driver import evaluate_drivers
+from .. contexts.mesh_modifier import evaluate_modifiers
 
 class ModalRunnerOperator(bpy.types.Operator):
     bl_idname = "en.modal_runner"
@@ -14,6 +15,7 @@ class ModalRunnerOperator(bpy.types.Operator):
     def modal(self, context, event):
         if event.type == "TIMER":
             evaluate_drivers()
+            evaluate_modifiers()
 
         if event.type == "ESC":
             self.finish(context)

@@ -1,13 +1,83 @@
 import bpy
+import bmesh
 from bpy.props import *
 from .. trees import DataFlowGroupTree
 
+modifier_type_items = [
+    ("SINGLE_POINT", "Single Point", ""),
+    ("OFFSET", "Offset", "")
+]
+
 class NodeMeshModifier(bpy.types.PropertyGroup):
     def is_function(self, tree):
-        return isinstance(tree, DataFloatGroupTree) and tree.is_valid_function
+        return isinstance(tree, DataFlowGroupTree) and tree.is_valid_function
+
+    type = EnumProperty(name = "Modifier Type", default = "SINGLE_POINT",
+        items = modifier_type_items)
+    source_object = PointerProperty(type = bpy.types.Object, poll = lambda _, object: object.type == "MESH")
 
     enabled = BoolProperty(name = "Enabled", default = False)
     data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
+
+def evaluate_modifiers():
+    for object in bpy.context.scene.collection.all_objects:
+        if object.type == "MESH" and object.data.node_modifier.enabled:
+            evaluate_modifier_on_mesh(object.data)
+
+def evaluate_modifier_on_mesh(mesh):
+    modifier = mesh.node_modifier
+    group = modifier.data_flow_group
+    if group is None:
+        return
+    if not group.is_valid_function:
+        return
+
+    signature = group.signature
+
+
+    if modifier.type == "SINGLE_POINT":
+        evaluate_modifier__single_point(mesh, modifier)
+    elif modifier.type == "OFFSET":
+        evaluate_modifier__offset(mesh, modifier)
+
+def evaluate_modifier__single_point(mesh, modifier):
+    clear_mesh(mesh)
+    group = modifier.data_flow_group
+    signature = group.signature
+
+    if not signature.match_output(["Vector"]):
+        raise Exception("output type should be a single vector")
+
+    if signature.match_input([]):
+        value = group.function()
+        mesh.from_pydata([value], [], [])
+    else:
+        raise Exception("should have no input")
+
+def evaluate_modifier__offset(mesh, modifier):
+    group = modifier.data_flow_group
+    signature = group.signature
+
+    if not signature.match_output(["Vector"]):
+        raise Exception("output type should be a single vector")
+    if not signature.match_input(["Vector"]):
+        raise Exception("input type should be a single vector")
+    if modifier.source_object is None:
+        return
+
+    function = group.function
+    bm = bmesh.new()
+    bm.from_mesh(modifier.source_object.data)
+
+    for vertex in bm.verts:
+        vertex.co = function(vertex.co)
+
+    bm.to_mesh(mesh)
+    bm.free()
+
+def clear_mesh(mesh):
+    bmesh.new().to_mesh(mesh)
+
 
 property_groups = [
     NodeMeshModifier

@@ -16,4 +16,7 @@ class MeshModifierPanel(bpy.types.Panel):
         modifier = context.active_object.data.node_modifier
 
         layout.prop(modifier, "enabled")
-        layout.prop(modifier, "data_flow_group")
+        layout.prop(modifier, "data_flow_group", text = "")
+        layout.prop(modifier, "type", text = "")
+        if modifier.type == "OFFSET":
+            layout.prop(modifier, "source_object", text = "Source")

@@ -67,5 +67,8 @@ class FunctionalNode(Node):
         """
         return set(self.inputs)
 
+    def code_changed(self, context = None):
+        self.id_data.update()
+
 class DeclarativeNode(Node):
     pass
