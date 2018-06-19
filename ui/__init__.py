@@ -1,8 +1,10 @@
 import bpy
-from . group_info_panel import GroupInfoPanel
+from . data_flow_group_info_panel import DataFlowGroupInfoPanel
+from . driver_panel import DriverPanel
 
 panels = [
-    GroupInfoPanel
+    DataFlowGroupInfoPanel,
+    DriverPanel
 ]
 
 def register():

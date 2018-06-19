@@ -1,8 +1,8 @@
 import bpy
-from . group import GroupNodeTree
+from . data_flow_group import DataFlowGroupTree
 
 tree_types = [
-    GroupNodeTree
+    DataFlowGroupTree
 ]
 
 def register():

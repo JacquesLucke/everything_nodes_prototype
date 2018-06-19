@@ -12,8 +12,8 @@ class ObjectTransformsNode(FunctionalNode, bpy.types.Node):
 
     def get_code(self):
         yield "if object is None:"
-        yield "    location = mathutils.Vector((0, 0, 0)"
-        yield "    scale = mathutils.Vector((1, 1, 1)"
+        yield "    location = mathutils.Vector((0, 0, 0))"
+        yield "    scale = mathutils.Vector((1, 1, 1))"
         yield "else:"
         yield "    location = object.location.copy()"
         yield "    scale = object.scale.copy()"

@@ -2,11 +2,13 @@ import bpy
 from . execute_callback import ExecuteCallbackOperator
 from . socket_type_chooser import ChooseSocketTypeOperator
 from . analyse_tree import AnalyseTreeOperator
+from . add_driver import AddDriverOperator
 
 operators = [
     AnalyseTreeOperator,
     ExecuteCallbackOperator,
-    ChooseSocketTypeOperator
+    ChooseSocketTypeOperator,
+    AddDriverOperator
 ]
 
 def register():

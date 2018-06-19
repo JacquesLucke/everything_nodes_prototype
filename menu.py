@@ -1,7 +1,8 @@
 import bpy
+from . trees import DataFlowGroupTree
 
 def draw_menu(self, context):
-    if context.space_data.tree_type != "en_GroupNodeTree":
+    if not isinstance(context.space_data.node_tree, DataFlowGroupTree):
         return
 
     layout = self.layout

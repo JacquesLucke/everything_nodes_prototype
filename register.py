@@ -4,10 +4,12 @@ from . import menu
 from . import trees
 from . import nodes
 from . import sockets
+from . import contexts
 from . import operators
 
 def register():
     operators.register()
+    contexts.register()
     sockets.register()
     trees.register()
     nodes.register()
@@ -20,5 +22,5 @@ def unregister():
     nodes.unregister()
     trees.unregister()
     sockets.unregister()
+    contexts.unregister()
     operators.unregister()
-    bpy.utils.unregister_class(EverythingNodesTree)

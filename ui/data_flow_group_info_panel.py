@@ -1,6 +1,7 @@
 import bpy
+from .. trees import DataFlowGroupTree
 
-class GroupInfoPanel(bpy.types.Panel):
+class DataFlowGroupInfoPanel(bpy.types.Panel):
     bl_idname = "en_InfoPanel"
     bl_label = "Info"
     bl_space_type = "NODE_EDITOR"
@@ -9,8 +10,7 @@ class GroupInfoPanel(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        try: return context.space_data.tree_type == "en_GroupNodeTree"
-        except: return False
+        return isinstance(context.space_data.node_tree, DataFlowGroupTree)
 
     def draw(self, context):
         layout = self.layout
