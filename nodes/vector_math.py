@@ -4,20 +4,20 @@ from .. base_node_types import FunctionalNode
 
 operator_items = [
     ("ADD", "Add", ""),
-    ("MULTIPLY", "Multiply", "")
+    ("MULTIPLY", "Multiply", "element-wise multiplication")
 ]
 
-class FloatMathNode(FunctionalNode, bpy.types.Node):
-    bl_idname = "en_FloatMathNode"
-    bl_label = "Float Math"
+class VectorMathNode(FunctionalNode, bpy.types.Node):
+    bl_idname = "en_VectorMathNode"
+    bl_label = "Vector Math"
 
     operator = EnumProperty(name = "Operator", default = "ADD",
         items = operator_items, update = FunctionalNode.code_changed)
 
     def create(self):
-        self.new_input("en_FloatSocket", "A", "a")
-        self.new_input("en_FloatSocket", "B", "b")
-        self.new_output("en_FloatSocket", "Result", "result")
+        self.new_input("en_VectorSocket", "A", "a")
+        self.new_input("en_VectorSocket", "B", "b")
+        self.new_output("en_VectorSocket", "Result", "result")
 
     def draw(self, layout):
         layout.prop(self, "operator", text = "")
@@ -26,4 +26,4 @@ class FloatMathNode(FunctionalNode, bpy.types.Node):
         if self.operator == "ADD":
             yield "result = a + b"
         elif self.operator == "MULTIPLY":
-            yield "result = a * b"
+            yield "result = mathutils.Vector((a.x*b.x, a.y*b.y, a.z*b.z))"

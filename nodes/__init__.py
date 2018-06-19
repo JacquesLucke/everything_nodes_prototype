@@ -7,6 +7,7 @@ from . separate_vector import SeparateVectorNode
 from . object_transforms import ObjectTransformsNode
 from . offset_vector_with_object import OffsetVectorWithObjectNode
 from . get_parent_object import GetObjectParentNode
+from . vector_math import VectorMathNode
 
 node_classes = [
     GroupInputNode,
@@ -16,7 +17,8 @@ node_classes = [
     SeparateVectorNode,
     ObjectTransformsNode,
     OffsetVectorWithObjectNode,
-    GetObjectParentNode
+    GetObjectParentNode,
+    VectorMathNode
 ]
 
 def register():

@@ -11,6 +11,7 @@ def draw_menu(self, context):
     insertNode(layout, "en_GroupOutputNode", "Group Output")
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")
+    insertNode(layout, "en_VectorMathNode", "Vector Math")
     insertNode(layout, "en_CombineVectorNode", "Combine Vector")
     insertNode(layout, "en_SeparateVectorNode", "Separate Vector")
     insertNode(layout, "en_ObjectTransformsNode", "Object Transforms")
