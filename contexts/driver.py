@@ -9,6 +9,7 @@ class FunctionalPropertyDriver(bpy.types.PropertyGroup):
 
     path = StringProperty()
     data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
+    last_dependency_state = StringProperty()
 
     def get_dependencies(self):
         signature = self.data_flow_group.signature
@@ -16,6 +17,21 @@ class FunctionalPropertyDriver(bpy.types.PropertyGroup):
             return self.data_flow_group.get_dependencies({signature.inputs[0] : self.id_data})
         else:
             return self.data_flow_group.get_dependencies({})
+
+    @property
+    def dependencies_changed_since_last_check(self):
+        current_state = self.get_dependency_state()
+        if current_state != self.last_dependency_state:
+            self.last_dependency_state = current_state
+            return True
+        return False
+
+    def get_dependency_state(self):
+        data = list()
+        for dependency in self.get_dependencies():
+            data.append(hash(dependency))
+            data.append(dependency.evaluate())
+        return str(hash(str(data)))
 
 def evaluate_drivers():
     for object in bpy.context.scene.collection.all_objects:
@@ -27,6 +43,8 @@ def evaluate_drivers_on_object(object):
         if group is None:
             continue
         if not group.is_valid_function:
+            continue
+        if not driver.dependencies_changed_since_last_check:
             continue
 
         signature = group.signature

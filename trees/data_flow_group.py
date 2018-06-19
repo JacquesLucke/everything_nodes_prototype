@@ -1,10 +1,19 @@
 import re
 import bpy
 from functools import lru_cache
+from collections import defaultdict
 from . base import NodeTree
 from .. base_socket_types import ExternalDataFlowSocket
 
 function_by_tree = {}
+
+class FunctionDataCache:
+    def __init__(self):
+        self.function = None
+        self.signature = None
+        self.dependencies = dict()
+
+cache = defaultdict(FunctionDataCache)
 
 class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
     bl_idname = "en_DataFlowGroupTree"
@@ -13,7 +22,7 @@ class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
 
     def update(self):
         super().update()
-        self.reset_function()
+        self.reset_cache()
 
     @property
     def is_valid_function(self):
@@ -44,41 +53,45 @@ class DataFlowGroupTree(NodeTree, bpy.types.NodeTree):
             raise Exception("there is more than one output node")
 
     @property
+    def cache(self):
+        return cache[self]
+
+    @property
     def signature(self):
-        input_node = self.input_node
-        if input_node is None:
-            inputs = []
-        else:
-            inputs = list(input_node.outputs)
-
-        outputs = list(self.output_node.inputs)
-
-        return FunctionSignature(inputs, outputs)
+        if self.cache.signature is None:
+            input_node = self.input_node
+            if input_node is None:
+                inputs = []
+            else:
+                inputs = list(input_node.outputs)
+            outputs = list(self.output_node.inputs)
+            self.cache.signature = FunctionSignature(inputs, outputs)
+        return self.cache.signature
 
     @property
     def function(self):
         if not self.is_valid_function:
             raise Exception("the node tree is in an invalid state")
-        if self not in function_by_tree:
-            self.update_function()
-        return function_by_tree[self]
+        if self.cache.function is None:
+            self.cache.function = generate_function(self)
+        return self.cache.function
 
-    def reset_function(self):
-        if self in function_by_tree:
-            del function_by_tree[self]
-
-    def update_function(self):
-        function_by_tree[self] = generate_function(self)
+    def reset_cache(self):
+        if self in cache:
+            del cache[self]
 
     def get_dependencies(self, external_inputs):
-        signature = self.signature
+        key = str(external_inputs)
+        if key not in self.cache.dependencies:
+            signature = self.signature
 
-        possible_external_values = {socket : {value} for socket, value in external_inputs.items()}
-        find_possible_external_values(self.graph, possible_external_values)
+            possible_external_values = {socket : {value} for socket, value in external_inputs.items()}
+            find_possible_external_values(self.graph, possible_external_values)
 
-        required_sockets = find_required_sockets(self.graph, signature.inputs, signature.outputs)
-        dependencies = find_dependencies(self.graph, required_sockets, possible_external_values, signature.inputs, signature.outputs)
-        return dependencies
+            required_sockets = find_required_sockets(self.graph, signature.inputs, signature.outputs)
+            dependencies = find_dependencies(self.graph, required_sockets, possible_external_values, signature.inputs, signature.outputs)
+            self.cache.dependencies[key] = dependencies
+        return self.cache.dependencies[key]
 
 class FunctionSignature:
     def __init__(self, inputs, outputs):

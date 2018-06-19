@@ -11,3 +11,6 @@ class Dependency:
 
     def __repr__(self):
         return f"<Object: {repr(self.object)}, {repr(self.attribute)}>"
+
+    def evaluate(self):
+        return self.object.path_resolve(self.attribute)
