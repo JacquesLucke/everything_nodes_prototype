@@ -22,6 +22,9 @@ class RotateObjectNode(ImperativeNode, bpy.types.Node):
 
         self.new_output("en_ControlFlowSocket", "Next", "NEXT")
 
+    def draw(self, layout):
+        layout.prop(self, "axis")
+
     def get_code(self):
         yield "if object is not None:"
         yield "    object.rotation_euler.{} += angle".format(self.axis.lower())
