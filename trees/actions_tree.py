@@ -21,8 +21,11 @@ class ActionsTree(NodeTree, bpy.types.NodeTree):
         if event.value == "PRESS":
             for node in self.graph.get_nodes_by_idname("en_KeyPressEventNode"):
                 if event.type == node.key_type.upper():
-                    f = generate_action(self, node.outputs[0])
-                    f()
+                    generate_action(self, node.outputs[0])()
+
+            for node in self.graph.get_nodes_by_idname("en_MouseClickEventNode"):
+                if event.type == node.mouse_button:
+                    generate_action(self, node.outputs[0])()
 
 
 def generate_action(tree, start_socket):

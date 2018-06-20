@@ -11,6 +11,7 @@ from . vector_math import VectorMathNode
 from . key_press_event import KeyPressEventNode
 from . move_object import MoveObjectNode
 from . condition import ConditionNode
+from . mouse_click_event import MouseClickEventNode
 
 node_classes = [
     GroupInputNode,
@@ -24,7 +25,8 @@ node_classes = [
     VectorMathNode,
     KeyPressEventNode,
     MoveObjectNode,
-    ConditionNode
+    ConditionNode,
+    MouseClickEventNode
 ]
 
 def register():

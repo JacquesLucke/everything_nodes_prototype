@@ -13,6 +13,7 @@ def draw_menu(self, context):
         insertNode(layout, "en_GroupOutputNode", "Group Output")
     elif isinstance(tree, ActionsTree):
         insertNode(layout, "en_KeyPressEventNode", "Key Press Event")
+        insertNode(layout, "en_MouseClickEventNode", "Mouse Click Event")
         layout.separator()
         insertNode(layout, "en_MoveObjectNode", "Move Object")
         insertNode(layout, "en_ConditionNode", "Condition")
