@@ -1,32 +1,36 @@
 import bpy
-from . group_input import GroupInputNode
-from . group_output import GroupOutputNode
+from . move_view import MoveViewNode
+from . condition import ConditionNode
 from . float_math import FloatMathNode
+from . rotate_view import RotateViewNode
+from . group_input import GroupInputNode
+from . vector_math import VectorMathNode
+from . move_object import MoveObjectNode
+from . group_output import GroupOutputNode
 from . combine_vector import CombineVectorNode
+from . key_press_event import KeyPressEventNode
 from . separate_vector import SeparateVectorNode
+from . mouse_click_event import MouseClickEventNode
+from . get_parent_object import GetObjectParentNode
 from . object_transforms import ObjectTransformsNode
 from . offset_vector_with_object import OffsetVectorWithObjectNode
-from . get_parent_object import GetObjectParentNode
-from . vector_math import VectorMathNode
-from . key_press_event import KeyPressEventNode
-from . move_object import MoveObjectNode
-from . condition import ConditionNode
-from . mouse_click_event import MouseClickEventNode
 
 node_classes = [
-    GroupInputNode,
-    GroupOutputNode,
+    MoveViewNode,
     FloatMathNode,
+    ConditionNode,
+    RotateViewNode,
+    GroupInputNode,
+    MoveObjectNode,
+    VectorMathNode,
+    GroupOutputNode,
+    KeyPressEventNode,
     CombineVectorNode,
     SeparateVectorNode,
-    ObjectTransformsNode,
-    OffsetVectorWithObjectNode,
+    MouseClickEventNode,
     GetObjectParentNode,
-    VectorMathNode,
-    KeyPressEventNode,
-    MoveObjectNode,
-    ConditionNode,
-    MouseClickEventNode
+    ObjectTransformsNode,
+    OffsetVectorWithObjectNode
 ]
 
 def register():

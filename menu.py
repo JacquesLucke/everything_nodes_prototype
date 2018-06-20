@@ -17,6 +17,8 @@ def draw_menu(self, context):
         layout.separator()
         insertNode(layout, "en_MoveObjectNode", "Move Object")
         insertNode(layout, "en_ConditionNode", "Condition")
+        insertNode(layout, "en_MoveViewNode", "Move View")
+        insertNode(layout, "en_RotateViewNode", "Rotate View")
 
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")
