@@ -27,6 +27,10 @@ class ActionsTree(NodeTree, bpy.types.NodeTree):
                 if event.type == node.mouse_button:
                     generate_action(self, node.outputs[0])()
 
+        if event.type == "TIMER":
+            for node in self.graph.get_nodes_by_idname("en_OnUpdateEventNode"):
+                generate_action(self, node.outputs[0])()
+
 
 def generate_action(tree, start_socket):
     code = "\n".join(iter_action_lines(tree, start_socket))

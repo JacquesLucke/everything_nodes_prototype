@@ -14,6 +14,7 @@ def draw_menu(self, context):
     elif isinstance(tree, ActionsTree):
         insertNode(layout, "en_KeyPressEventNode", "Key Press Event")
         insertNode(layout, "en_MouseClickEventNode", "Mouse Click Event")
+        insertNode(layout, "en_OnUpdateEventNode", "On Update Event")
         layout.separator()
         insertNode(layout, "en_MoveObjectNode", "Move Object")
         insertNode(layout, "en_RotateObjectNode", "Rotate Object")

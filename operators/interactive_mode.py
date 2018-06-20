@@ -13,13 +13,17 @@ class InteractiveModeOperator(bpy.types.Operator):
             return {"CANCELLED"}
 
         save_current_state()
-        context.window_manager.modal_handler_add(self)
+
+        wm = context.window_manager
+        wm.modal_handler_add(self)
+        self._timer = wm.event_timer_add(0.01, context.window)
         self.setup_view(context)
         return {"RUNNING_MODAL"}
 
     def modal(self, context, event):
         if event.type == "ESC":
             self.reset_window(context)
+            context.window_manager.event_timer_remove(self._timer)
             load_last_saved_state()
             return {"FINISHED"}
 

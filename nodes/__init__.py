@@ -9,6 +9,7 @@ from . move_object import MoveObjectNode
 from . group_output import GroupOutputNode
 from . rotate_object import RotateObjectNode
 from . combine_vector import CombineVectorNode
+from . on_update_event import OnUpdateEventNode
 from . key_press_event import KeyPressEventNode
 from . separate_vector import SeparateVectorNode
 from . mouse_click_event import MouseClickEventNode
@@ -27,6 +28,7 @@ node_classes = [
     GroupOutputNode,
     RotateObjectNode,
     KeyPressEventNode,
+    OnUpdateEventNode,
     CombineVectorNode,
     SeparateVectorNode,
     MouseClickEventNode,
