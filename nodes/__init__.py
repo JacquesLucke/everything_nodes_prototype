@@ -15,6 +15,7 @@ from . separate_vector import SeparateVectorNode
 from . mouse_click_event import MouseClickEventNode
 from . get_parent_object import GetObjectParentNode
 from . object_transforms import ObjectTransformsNode
+from . set_object_attribute import SetObjectAttributeNode
 from . offset_vector_with_object import OffsetVectorWithObjectNode
 
 node_classes = [
@@ -34,6 +35,7 @@ node_classes = [
     MouseClickEventNode,
     GetObjectParentNode,
     ObjectTransformsNode,
+    SetObjectAttributeNode,
     OffsetVectorWithObjectNode
 ]
 
