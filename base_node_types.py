@@ -34,7 +34,12 @@ class Node:
         return list(self.inputs) + list(self.outputs)
 
 class ImperativeNode(Node):
-    pass
+    def get_code(self):
+        """
+        Similar to the FunctionalNode.get_code function.
+        But here the generated code is allowed to have side effects.
+        """
+        raise NotImplementedError()
 
 class FunctionalNode(Node):
     def get_code(self, required):

@@ -1,8 +1,10 @@
 import bpy
 from . data_flow_group import DataFlowGroupTree
+from . actions_tree import ActionsTree
 
 tree_types = [
-    DataFlowGroupTree
+    DataFlowGroupTree,
+    ActionsTree
 ]
 
 def register():

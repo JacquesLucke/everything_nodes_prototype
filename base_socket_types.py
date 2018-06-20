@@ -42,8 +42,9 @@ class InternalDataFlowSocket(DataFlowSocket):
 class ExternalDataFlowSocket(DataFlowSocket):
     pass
 
-class ControlFlowSocket(Socket):
-    pass
+# There is only one of this type
+# class ControlFlowSocket(Socket):
+#     pass
 
 class RelationalSocket(Socket):
     pass

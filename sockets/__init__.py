@@ -3,12 +3,17 @@ import bpy
 from . float import FloatSocket
 from . vector import VectorSocket
 from . object import ObjectSocket
+from . boolean import BooleanSocket
+from . control_flow import ControlFlowSocket
 
-socket_classes = [
+data_flow_socket_classes = [
     FloatSocket,
     VectorSocket,
-    ObjectSocket
+    ObjectSocket,
+    BooleanSocket
 ]
+
+socket_classes = data_flow_socket_classes + [ControlFlowSocket]
 
 def register():
     for cls in socket_classes:
@@ -18,5 +23,5 @@ def unregister():
     for cls in socket_classes:
         bpy.utils.unregister_class(cls)
 
-def get_socket_classes():
+def get_data_flow_socket_classes():
     return socket_classes[:]

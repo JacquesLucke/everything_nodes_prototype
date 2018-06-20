@@ -1,8 +1,9 @@
 import os
 import bpy
 from pathlib import Path
+from .. trees import ActionsTree
 
-class StartInteractiveModeOperator(bpy.types.Operator):
+class InteractiveModeOperator(bpy.types.Operator):
     bl_idname = "en.start_interactive_mode"
     bl_label = "Start Interactive Mode"
 
@@ -42,8 +43,6 @@ def load_last_saved_state():
     bpy.ops.wm.open_mainfile(filepath = bpy.data.filepath)
 
 def handle_event(event):
-    object = bpy.context.active_object
-    if event.type == "UP_ARROW":
-        object.location.y += 0.1
-    elif event.type == "DOWN_ARROW":
-        object.location.y -= 0.1
+    for tree in bpy.data.node_groups:
+        if isinstance(tree, ActionsTree):
+            tree.handle_event(event)
