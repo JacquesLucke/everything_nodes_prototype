@@ -16,6 +16,7 @@ def draw_menu(self, context):
         insertNode(layout, "en_MouseClickEventNode", "Mouse Click Event")
         layout.separator()
         insertNode(layout, "en_MoveObjectNode", "Move Object")
+        insertNode(layout, "en_RotateObjectNode", "Rotate Object")
         insertNode(layout, "en_ConditionNode", "Condition")
         insertNode(layout, "en_MoveViewNode", "Move View")
         insertNode(layout, "en_RotateViewNode", "Rotate View")

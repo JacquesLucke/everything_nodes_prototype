@@ -43,6 +43,9 @@ class ImperativeNode(Node):
         """
         raise NotImplementedError()
 
+    def code_changed(self, context = None):
+        self.id_data.update()
+
 class FunctionalNode(Node):
     def get_code(self, required):
         """

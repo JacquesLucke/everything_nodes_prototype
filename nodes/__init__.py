@@ -7,6 +7,7 @@ from . group_input import GroupInputNode
 from . vector_math import VectorMathNode
 from . move_object import MoveObjectNode
 from . group_output import GroupOutputNode
+from . rotate_object import RotateObjectNode
 from . combine_vector import CombineVectorNode
 from . key_press_event import KeyPressEventNode
 from . separate_vector import SeparateVectorNode
@@ -24,6 +25,7 @@ node_classes = [
     MoveObjectNode,
     VectorMathNode,
     GroupOutputNode,
+    RotateObjectNode,
     KeyPressEventNode,
     CombineVectorNode,
     SeparateVectorNode,
