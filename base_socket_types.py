@@ -1,4 +1,9 @@
+import bpy
+
 class Socket:
+    input_link_limit = 0
+    output_link_limit = 0
+
     def draw_color(self, context, node):
         return self.color
 
@@ -12,6 +17,9 @@ class Socket:
             return list(node.inputs).index(self)
 
 class DataFlowSocket(Socket):
+    input_link_limit = 1
+    output_link_limit = 0
+
     data_type = NotImplemented
 
     def draw(self, context, layout, node, text):
@@ -42,9 +50,9 @@ class InternalDataFlowSocket(DataFlowSocket):
 class ExternalDataFlowSocket(DataFlowSocket):
     pass
 
-# There is only one of this type
-# class ControlFlowSocket(Socket):
-#     pass
+class ControlFlowBaseSocket(Socket):
+    input_link_limit = 0
+    output_link_limit = 1
 
 class RelationalSocket(Socket):
     pass

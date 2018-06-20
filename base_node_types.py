@@ -9,11 +9,13 @@ class Node:
 
     def new_input(self, idname, name, identifier = None):
         if identifier is None: identifier = name
-        self.inputs.new(idname, name, identifier)
+        socket = self.inputs.new(idname, name, identifier)
+        socket.link_limit = socket.input_link_limit
 
     def new_output(self, idname, name, identifier = None):
         if identifier is None: identifier = name
-        self.outputs.new(idname, name, identifier)
+        socket = self.outputs.new(idname, name, identifier)
+        socket.link_limit = socket.output_link_limit
 
     def draw_buttons(self, context, layout):
         self.draw(layout)

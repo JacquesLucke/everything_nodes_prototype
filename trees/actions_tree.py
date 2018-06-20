@@ -1,7 +1,6 @@
 import bpy
 from . base import NodeTree
-from .. base_socket_types import DataFlowSocket
-from .. sockets import ControlFlowSocket
+from .. base_socket_types import DataFlowSocket, ControlFlowBaseSocket
 
 class ActionsTree(NodeTree, bpy.types.NodeTree):
     bl_idname = "en_ActionsTree"
@@ -14,18 +13,16 @@ class ActionsTree(NodeTree, bpy.types.NodeTree):
     def external_data_socket_changed(self):
         pass
 
-    def get_event_nodes(self):
-        return self.graph.get_nodes_by_idname("en_KeyPressEventNode")
-
     def print_event_code(self):
         for node in self.get_event_nodes():
             generate_action(self, node.outputs[0])
 
     def handle_event(self, event):
-        for node in self.graph.get_nodes_by_idname("en_KeyPressEventNode"):
-            if event.type == node.key_type.upper():
-                f = generate_action(self, node.outputs[0])
-                f()
+        if event.value == "PRESS":
+            for node in self.graph.get_nodes_by_idname("en_KeyPressEventNode"):
+                if event.type == node.key_type.upper():
+                    f = generate_action(self, node.outputs[0])
+                    f()
 
 
 def generate_action(tree, start_socket):
@@ -73,7 +70,7 @@ def generate_action_code(graph, socket):
         yield ""
         yield "# Execute actual node"
 
-        control_outputs = {s.identifier : s for s in node.outputs if isinstance(s, ControlFlowSocket)}
+        control_outputs = {s.identifier : s for s in node.outputs if isinstance(s, ControlFlowBaseSocket)}
 
         for line in node.get_code():
             for identifer, out_socket in control_outputs.items():

@@ -24,4 +24,4 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
 def get_data_flow_socket_classes():
-    return socket_classes[:]
+    return data_flow_socket_classes[:]
