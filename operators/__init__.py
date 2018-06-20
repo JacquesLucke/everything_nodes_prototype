@@ -5,6 +5,7 @@ from . analyse_tree import AnalyseTreeOperator
 from . add_driver import AddDriverOperator
 from . modal_runner import ModalRunnerOperator
 from . print_driver_dependencies import PrintDriverDependenciesOperator
+from . start_interactive_mode import StartInteractiveModeOperator
 
 operators = [
     AnalyseTreeOperator,
@@ -12,7 +13,8 @@ operators = [
     ChooseSocketTypeOperator,
     AddDriverOperator,
     ModalRunnerOperator,
-    PrintDriverDependenciesOperator
+    PrintDriverDependenciesOperator,
+    StartInteractiveModeOperator
 ]
 
 def register():
