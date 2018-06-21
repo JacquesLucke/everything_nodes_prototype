@@ -16,7 +16,7 @@ class ColorSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
         layout.column(align = True).prop(self, "value", text = text)
 
     def get_value(self):
-        return self.value
+        return self.value.copy()
 
     def get_dependencies(self):
         yield AttributeDependency(self, "value")
