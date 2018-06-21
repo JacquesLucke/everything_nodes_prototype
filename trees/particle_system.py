@@ -73,6 +73,9 @@ def iter_emitter_function_code(tree, emitters):
 
 def simulate_step(particle_system, state, current_time, time_step):
     for particle_type in particle_system.particle_types:
+        for particle in state.particles_by_type[particle_type]:
+            particle.location += particle.velocity * time_step
+
         new_particles = particle_type.emitter_function(current_time, time_step)
         state.particles_by_type[particle_type].update(new_particles)
 

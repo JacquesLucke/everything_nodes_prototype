@@ -25,6 +25,7 @@ class PointEmitterNode(ParticleEmitterNode, bpy.types.Node):
             particle = new_particle()
             offset = randomness * Vector((random() - 0.5, random() - 0.5, random() - 0.5))
             particle.location = location + offset
+            particle.velocity = Vector((1, 0, 0))
             particles.append(particle)
 
         return particles

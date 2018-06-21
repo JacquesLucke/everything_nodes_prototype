@@ -16,7 +16,7 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
 
     def invoke(self, context, event):
         wm = context.window_manager
-        self._timer = wm.event_timer_add(0.1, context.window)
+        self._timer = wm.event_timer_add(0.016, context.window)
         wm.modal_handler_add(self)
 
         self.draw_handler = bpy.types.SpaceView3D.draw_handler_add(
@@ -27,17 +27,25 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
         self.particle_system = tree.get_particle_system()
         self.last_time = time.perf_counter()
 
+        self.is_pause = False
+
         return {"RUNNING_MODAL"}
 
     def modal(self, context, event):
-        if event.type == "TIMER":
-            current_time = time.perf_counter()
-            time_step = current_time - self.last_time
-            simulate_step(self.particle_system, self.state, current_time, time_step)
-            self.last_time = current_time
+        if not self.is_pause:
+            if event.type == "TIMER":
+                current_time = time.perf_counter()
+                time_step = current_time - self.last_time
+                simulate_step(self.particle_system, self.state, current_time, time_step)
+                self.last_time = current_time
 
-        for area in context.screen.areas:
-            area.tag_redraw()
+            for area in context.screen.areas:
+                area.tag_redraw()
+
+        if event.type == "SPACE" and event.value == "PRESS":
+            self.is_pause = not self.is_pause
+            self.last_time = time.perf_counter()
+            return {"RUNNING_MODAL"}
 
         if event.type == "ESC":
             self.finish(context)
