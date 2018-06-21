@@ -59,9 +59,14 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
 
     def draw_callback(self):
         glPointSize(2)
+        glEnable(GL_POINT_SMOOTH)
+        glHint(GL_POINT_SMOOTH_HINT, GL_NICEST)
+
         glBegin(GL_POINTS)
         for particle_type, particles in self.state.particles_by_type.items():
             for particle in particles:
                 glColor3f(*particle.color)
                 glVertex3f(*particle.location)
         glEnd()
+
+        glDisable(GL_POINT_SMOOTH)
