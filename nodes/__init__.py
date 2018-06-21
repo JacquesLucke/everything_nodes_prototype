@@ -16,6 +16,7 @@ from . combine_vector import CombineVectorNode
 from . on_update_event import OnUpdateEventNode
 from . key_press_event import KeyPressEventNode
 from . separate_vector import SeparateVectorNode
+from . age_trigger import ParticleAgeTriggerNode
 from . mouse_click_event import MouseClickEventNode
 from . get_parent_object import GetObjectParentNode
 from . object_transforms import ObjectTransformsNode
@@ -44,6 +45,7 @@ node_classes = [
     GetObjectParentNode,
     ObjectTransformsNode,
     SetObjectAttributeNode,
+    ParticleAgeTriggerNode,
     OffsetVectorWithObjectNode
 ]
 

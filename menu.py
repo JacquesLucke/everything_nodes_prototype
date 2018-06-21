@@ -29,6 +29,8 @@ def draw_menu(self, context):
         layout.separator()
         insertNode(layout, "en_GravityNode", "Gravity")
         insertNode(layout, "en_AttractNode", "Attract")
+        layout.separator()
+        insertNode(layout, "en_ParticleAgeTriggerNode", "Age Trigger")
 
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")

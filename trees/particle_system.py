@@ -2,15 +2,16 @@ import bpy
 from . base import NodeTree
 from mathutils import Vector
 from collections import defaultdict
+from .. utils.code import code_to_function
 from .. base_socket_types import DataFlowSocket
 from .. nodes.particle_force_base import ParticleForceNode
 from .. nodes.particle_emitter_base import ParticleEmitterNode
+from .. nodes.particle_event_trigger_base import ParticleEventTriggerNode
 
 from . data_flow_group import (
     iter_import_lines,
     generate_function_code,
-    replace_local_identifiers,
-    main_function_from_code_lines
+    replace_local_identifiers
 )
 
 class ParticleSystemTree(NodeTree, bpy.types.NodeTree):
@@ -33,10 +34,16 @@ class ParticleSystemTree(NodeTree, bpy.types.NodeTree):
             forces = get_force_nodes_for_particle_node(self.graph, node)
             forces_function = get_forces_function(self, forces)
 
+            event_triggers = get_event_trigger_nodes_for_particle_node(self.graph, node)
+            event_function = get_events_function(self, event_triggers)
+
             particle_type = ParticleType(emitter_function, forces_function)
             particle_types.append(particle_type)
         return ParticleSystem(particle_types)
 
+
+# Emitters
+###########################################
 
 def get_emitter_nodes_for_particle_node(graph, node):
     emitters = set()
@@ -46,10 +53,8 @@ def get_emitter_nodes_for_particle_node(graph, node):
             emitters.add(linked_node)
     return emitters
 
+@code_to_function()
 def get_emitter_function(tree, emitters):
-    return main_function_from_code_lines(iter_emitter_function_code(tree, emitters))
-
-def iter_emitter_function_code(tree, emitters):
     graph = tree.graph
     yield from iter_import_lines(tree)
     yield "from everything_nodes_prototype.trees.particle_system import Particle as NEW_PARTICLE"
@@ -71,6 +76,9 @@ def iter_emitter_function_code(tree, emitters):
     yield "    return ALL_NEW_PARTICLES"
 
 
+# Forces
+###########################################
+
 def get_force_nodes_for_particle_node(graph, node):
     forces = set()
     for socket in graph.get_linked_sockets(node.inputs["Modifiers"]):
@@ -79,10 +87,8 @@ def get_force_nodes_for_particle_node(graph, node):
             forces.add(linked_node)
     return forces
 
+@code_to_function()
 def get_forces_function(tree, forces):
-    return main_function_from_code_lines(iter_forces_function_code(tree, forces))
-
-def iter_forces_function_code(tree, forces):
     graph = tree.graph
     yield from iter_import_lines(tree)
     yield "def main(LOCATION):"
@@ -99,6 +105,37 @@ def iter_forces_function_code(tree, forces):
             yield "    " + replace_local_identifiers(line, force, inputs, variables)
         yield "    ALL_FORCES += FORCE"
     yield "    return ALL_FORCES"
+
+
+# Events
+##############################################
+
+def get_event_trigger_nodes_for_particle_node(graph, node):
+    event_triggers = set()
+    for socket in graph.get_linked_sockets(node.outputs["Particle Type"]):
+        linked_node = graph.get_node_by_socket(socket)
+        if isinstance(linked_node, ParticleEventTriggerNode):
+            event_triggers.add(linked_node)
+    return event_triggers
+
+@code_to_function(verbose = True)
+def get_events_function(tree, event_triggers):
+    graph = tree.graph
+    yield from iter_import_lines(tree)
+    yield "def main(PARTICLE):"
+    yield "    pass"
+
+    sockets_to_calculate = get_data_flow_inputs(event_triggers)
+    variables = {}
+    for line in generate_function_code(graph, sockets_to_calculate, variables):
+        yield "    " + line
+
+    for trigger in event_triggers:
+        inputs = get_data_flow_inputs(trigger)
+        for line in trigger.get_trigger_code():
+            yield "    " + replace_local_identifiers(line, trigger, inputs, variables)
+        yield "    if TRIGGERED: pass"
+
 
 def get_data_flow_inputs(nodes):
     if isinstance(nodes, bpy.types.Node):
@@ -118,6 +155,8 @@ def simulate_step(particle_system, state, current_time, time_step):
             particle.location += particle.velocity * time_step
 
         new_particles = particle_type.emitter_function(current_time, time_step)
+        for particle in new_particles:
+            particle.born_time = current_time
         state.particles_by_type[particle_type].update(new_particles)
 
 class ParticleSystemState:
@@ -137,3 +176,4 @@ class Particle:
     def __init__(self):
         self.location = Vector((0, 0, 0))
         self.velocity = Vector((0, 0, 0))
+        self.born_time = 0

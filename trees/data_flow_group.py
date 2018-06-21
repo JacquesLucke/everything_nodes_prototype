@@ -1,8 +1,9 @@
 import re
 import bpy
+from . base import NodeTree
 from functools import lru_cache
 from collections import defaultdict
-from . base import NodeTree
+from .. utils.code import code_to_function
 from .. base_socket_types import ExternalDataFlowSocket
 
 function_by_tree = {}
@@ -125,16 +126,8 @@ class FunctionSignature:
             return False
         return all(s.data_type == t for s, t in zip(self.outputs, pattern))
 
+@code_to_function()
 def generate_function(tree):
-    return main_function_from_code_lines(iter_function_lines(tree))
-
-def main_function_from_code_lines(lines):
-    code = "\n".join(lines)
-    container = {}
-    exec(code, container, container)
-    return container["main"]
-
-def iter_function_lines(tree):
     yield from iter_import_lines(tree)
     signature = tree.signature
 

@@ -5,6 +5,7 @@ from . vector import VectorSocket
 from . object import ObjectSocket
 from . boolean import BooleanSocket
 from . control_flow import ControlFlowSocket
+from . particle_type import ParticleTypeSocket
 from . particle_emitter import ParticleEmitterSocket
 from . particle_modifier import ParticleModifierSocket
 
@@ -13,6 +14,7 @@ data_flow_socket_classes = [
     VectorSocket,
     ObjectSocket,
     BooleanSocket,
+    ParticleTypeSocket,
     ParticleEmitterSocket,
     ParticleModifierSocket
 ]

@@ -1,12 +1,12 @@
 import bpy
 from . base import NodeTree
+from .. utils.code import code_to_function
 from .. base_socket_types import DataFlowSocket, ControlFlowBaseSocket
 
 from . data_flow_group import (
     iter_import_lines,
     generate_function_code,
-    replace_local_identifiers,
-    main_function_from_code_lines
+    replace_local_identifiers
 )
 
 class ActionsTree(NodeTree, bpy.types.NodeTree):
@@ -39,10 +39,8 @@ class ActionsTree(NodeTree, bpy.types.NodeTree):
                 generate_action(self, node.outputs[0])()
 
 
+@code_to_function()
 def generate_action(tree, start_socket):
-    return main_function_from_code_lines(iter_action_lines(tree, start_socket))
-
-def iter_action_lines(tree, start_socket):
     yield from iter_import_lines(tree)
     yield "def main():"
     yield "    pass"
