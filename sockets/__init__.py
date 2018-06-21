@@ -1,6 +1,7 @@
 import bpy
 
 from . float import FloatSocket
+from . color import ColorSocket
 from . vector import VectorSocket
 from . object import ObjectSocket
 from . boolean import BooleanSocket
@@ -11,6 +12,7 @@ from . particle_modifier import ParticleModifierSocket
 
 data_flow_socket_classes = [
     FloatSocket,
+    ColorSocket,
     VectorSocket,
     ObjectSocket,
     BooleanSocket,

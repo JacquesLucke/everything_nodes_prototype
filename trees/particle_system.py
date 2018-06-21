@@ -1,6 +1,6 @@
 import bpy
 from . base import NodeTree
-from mathutils import Vector
+from mathutils import Vector, Color
 from collections import defaultdict
 from .. utils.code import code_to_function
 from . actions_tree import generate_action_code
@@ -197,3 +197,4 @@ class Particle:
         self.location = Vector((0, 0, 0))
         self.velocity = Vector((0, 0, 0))
         self.born_time = 0
+        self.color = Color((1, 1, 1))

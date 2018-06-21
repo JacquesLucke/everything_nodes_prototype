@@ -60,9 +60,8 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
     def draw_callback(self):
         glPointSize(2)
         glBegin(GL_POINTS)
-        glColor3f(1, 1, 1)
         for particle_type, particles in self.state.particles_by_type.items():
             for particle in particles:
-                location = particle.location
-                glVertex3f(location.x, location.y, location.z)
+                glColor3f(*particle.color)
+                glVertex3f(*particle.location)
         glEnd()

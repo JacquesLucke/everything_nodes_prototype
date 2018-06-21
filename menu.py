@@ -33,6 +33,7 @@ def draw_menu(self, context):
         insertNode(layout, "en_ParticleAgeTriggerNode", "Age Trigger")
         layout.separator()
         insertNode(layout, "en_ChangeParticleDirectionNode", "Change Direction")
+        insertNode(layout, "en_ChangeParticleColorNode", "Change Color")
         insertNode(layout, "en_KillParticleNode", "Kill Particle")
         insertNode(layout, "en_ParticleInfoNode", "Particle Info")
 
