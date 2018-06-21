@@ -2,6 +2,13 @@ import bpy
 from . base import NodeTree
 from .. base_socket_types import DataFlowSocket, ControlFlowBaseSocket
 
+from . data_flow_group import (
+    iter_import_lines,
+    generate_function_code,
+    replace_local_identifiers,
+    main_function_from_code_lines
+)
+
 class ActionsTree(NodeTree, bpy.types.NodeTree):
     bl_idname = "en_ActionsTree"
     bl_icon = "PMARKER_ACT"
@@ -33,27 +40,14 @@ class ActionsTree(NodeTree, bpy.types.NodeTree):
 
 
 def generate_action(tree, start_socket):
-    code = "\n".join(iter_action_lines(tree, start_socket))
-    container = {}
-    exec(code, container, container)
-    return container["main"]
+    return main_function_from_code_lines(iter_action_lines(tree, start_socket))
 
 def iter_action_lines(tree, start_socket):
-    yield "import bpy, mathutils"
-    yield f"nodes = bpy.data.node_groups[{repr(tree.name)}].nodes"
-
+    yield from iter_import_lines(tree)
     yield "def main():"
     yield "    pass"
     for line in generate_action_code(tree.graph, start_socket):
         yield "    " + line
-
-from . data_flow_group import (
-    generate_function_code,
-    generate_code_for_unlinked_input,
-    generate_self_expression,
-    find_required_sockets,
-    replace_variable_name
-)
 
 def generate_action_code(graph, socket):
     if socket.is_output:
@@ -69,10 +63,8 @@ def generate_action_code(graph, socket):
         yield "#"
 
         sockets_to_calculate = {s for s in node.inputs if isinstance(s, DataFlowSocket)}
-        required_sockets = find_required_sockets(graph, set(), sockets_to_calculate)
         variables = dict()
-        yield from generate_function_code(graph, sockets_to_calculate, required_sockets, variables,
-                generate_code_for_unlinked_input, generate_self_expression)
+        yield from generate_function_code(graph, sockets_to_calculate, variables)
 
         yield ""
         yield "# Execute actual node"
@@ -88,8 +80,4 @@ def generate_action_code(graph, socket):
                         yield indentation + next_line
                     break
             else:
-                for socket in node.sockets:
-                    if isinstance(socket, DataFlowSocket):
-                        line = replace_variable_name(line, socket.identifier, variables[socket])
-                line = replace_variable_name(line, "self", generate_self_expression(graph, node))
-                yield line
+                yield replace_local_identifiers(line, node, sockets_to_calculate, variables)

@@ -20,6 +20,7 @@ class ModalRunnerOperator(bpy.types.Operator):
         if event.type == "ESC":
             self.finish(context)
             return {"CANCELLED"}
+
         return {"PASS_THROUGH"}
 
     def finish(self, context):

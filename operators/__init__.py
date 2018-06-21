@@ -1,21 +1,24 @@
 import bpy
-from . execute_callback import ExecuteCallbackOperator
-from . socket_type_chooser import ChooseSocketTypeOperator
-from . analyse_tree import AnalyseTreeOperator
 from . add_driver import AddDriverOperator
+from . analyse_tree import AnalyseTreeOperator
 from . modal_runner import ModalRunnerOperator
-from . print_driver_dependencies import PrintDriverDependenciesOperator
+from . execute_callback import ExecuteCallbackOperator
 from . interactive_mode import InteractiveModeOperator
+from . socket_type_chooser import ChooseSocketTypeOperator
+from . simulate_particle_system import SimulateParticleSystemOperator
+from . print_driver_dependencies import PrintDriverDependenciesOperator
 
 operators = [
+    AddDriverOperator,
     AnalyseTreeOperator,
+    ModalRunnerOperator,
+    InteractiveModeOperator,
     ExecuteCallbackOperator,
     ChooseSocketTypeOperator,
-    AddDriverOperator,
-    ModalRunnerOperator,
-    PrintDriverDependenciesOperator,
-    InteractiveModeOperator
+    SimulateParticleSystemOperator,
+    PrintDriverDependenciesOperator
 ]
+
 
 def register():
     for cls in operators:

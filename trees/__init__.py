@@ -1,10 +1,12 @@
 import bpy
-from . data_flow_group import DataFlowGroupTree
 from . actions_tree import ActionsTree
+from . data_flow_group import DataFlowGroupTree
+from . particle_system import ParticleSystemTree
 
 tree_types = [
+    ActionsTree,
     DataFlowGroupTree,
-    ActionsTree
+    ParticleSystemTree
 ]
 
 def register():

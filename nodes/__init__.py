@@ -7,7 +7,9 @@ from . group_input import GroupInputNode
 from . vector_math import VectorMathNode
 from . move_object import MoveObjectNode
 from . group_output import GroupOutputNode
+from . point_emitter import PointEmitterNode
 from . rotate_object import RotateObjectNode
+from . particle_type import ParticleTypeNode
 from . combine_vector import CombineVectorNode
 from . on_update_event import OnUpdateEventNode
 from . key_press_event import KeyPressEventNode
@@ -27,6 +29,8 @@ node_classes = [
     MoveObjectNode,
     VectorMathNode,
     GroupOutputNode,
+    PointEmitterNode,
+    ParticleTypeNode,
     RotateObjectNode,
     KeyPressEventNode,
     OnUpdateEventNode,

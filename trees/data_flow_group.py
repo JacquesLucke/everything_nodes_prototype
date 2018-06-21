@@ -126,16 +126,17 @@ class FunctionSignature:
         return all(s.data_type == t for s, t in zip(self.outputs, pattern))
 
 def generate_function(tree):
-    code = "\n".join(iter_function_lines(tree))
+    return main_function_from_code_lines(iter_function_lines(tree))
+
+def main_function_from_code_lines(lines):
+    code = "\n".join(lines)
     container = {}
     exec(code, container, container)
     return container["main"]
 
 def iter_function_lines(tree):
-    yield "import bpy, mathutils"
-    yield f"nodes = bpy.data.node_groups[{repr(tree.name)}].nodes"
+    yield from iter_import_lines(tree)
     signature = tree.signature
-    required_sockets = find_required_sockets(tree.graph, signature.inputs, signature.outputs)
 
     variables = {}
     for i, socket in enumerate(signature.inputs):
@@ -144,24 +145,15 @@ def iter_function_lines(tree):
     input_string = ", ".join(variables[socket] for socket in signature.inputs)
     yield f"def main({input_string}):"
 
-    for line in generate_function_code(tree.graph, signature.outputs, required_sockets, variables,
-            generate_code_for_unlinked_input, generate_self_expression):
+    for line in generate_function_code(tree.graph, signature.outputs, variables):
         yield "    " + line
 
     output_string = ", ".join(variables[socket] for socket in signature.outputs)
     yield "    return " + output_string
 
-def generate_code_for_unlinked_input(graph, socket, variables):
-    name = get_new_socket_name(graph, socket)
-    node = graph.get_node_by_socket(socket)
-    variables[socket] = name
-    yield "{} = nodes['{}'].inputs[{}].get_value()".format(
-        name, node.name, socket.get_index(node)
-    )
-
-def generate_self_expression(graph, node):
-    return f"nodes[{repr(node.name)}]"
-
+def iter_import_lines(tree):
+    yield "import bpy, mathutils"
+    yield f"nodes = bpy.data.node_groups[{repr(tree.name)}].nodes"
 
 def find_possible_external_values(graph, values):
     def find_possible_values(socket):
@@ -239,8 +231,12 @@ def find_required_sockets(graph, input_sockets, output_sockets):
 
     return required_sockets
 
-def generate_function_code(graph, output_sockets, required_sockets, variables,
-        generate_unlinked_input, generate_self_expression):
+def generate_function_code(graph, sockets_to_calculate, variables):
+    required_sockets = find_required_sockets(graph, set(), sockets_to_calculate)
+    yield from _generate_function_code(graph, sockets_to_calculate, variables, required_sockets)
+
+
+def _generate_function_code(graph, output_sockets, variables, required_sockets):
     def calculate_socket(socket):
         if socket in variables:
             return
@@ -257,14 +253,11 @@ def generate_function_code(graph, output_sockets, required_sockets, variables,
             yield ""
             yield "# " + repr(node.name)
             for line in node.get_code(required_sockets):
-                for socket in node.sockets:
-                    line = replace_variable_name(line, socket.identifier, variables[socket])
-                line = replace_variable_name(line, "self", generate_self_expression(graph, node))
-                yield line
+                yield replace_local_identifiers(line, node, node.sockets, variables)
         else:
             linked_sockets = graph.get_linked_sockets(socket)
             if len(linked_sockets) == 0:
-                yield from generate_unlinked_input(graph, socket, variables)
+                yield from generate_unlinked_input_code(graph, socket, variables)
             elif len(linked_sockets) == 1:
                 source_socket = next(iter(linked_sockets))
                 yield from calculate_socket(source_socket)
@@ -272,6 +265,23 @@ def generate_function_code(graph, output_sockets, required_sockets, variables,
 
     for socket in output_sockets:
         yield from calculate_socket(socket)
+
+def generate_unlinked_input_code(graph, socket, variables):
+    name = get_new_socket_name(graph, socket)
+    node = graph.get_node_by_socket(socket)
+    variables[socket] = name
+    yield "{} = nodes['{}'].inputs[{}].get_value()".format(
+        name, node.name, socket.get_index(node)
+    )
+
+def generate_self_expression(node):
+    return f"nodes[{repr(node.name)}]"
+
+def replace_local_identifiers(code, node, sockets, variables):
+    for socket in sockets:
+        code = replace_variable_name(code, socket.identifier, variables[socket])
+    code = replace_variable_name(code, "self", generate_self_expression(node))
+    return code
 
 counter = 0
 

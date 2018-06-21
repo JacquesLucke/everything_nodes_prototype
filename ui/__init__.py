@@ -1,11 +1,13 @@
 import bpy
 from . data_flow_group_info_panel import DataFlowGroupInfoPanel
 from . mesh_modifier_panel import MeshModifierPanel
+from . particles_panel import ParticlesPanel
 from . driver_panel import DriverPanel
 
 panels = [
     DataFlowGroupInfoPanel,
     MeshModifierPanel,
+    ParticlesPanel,
     DriverPanel
 ]
 

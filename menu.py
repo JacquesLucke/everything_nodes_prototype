@@ -1,9 +1,9 @@
 import bpy
-from . trees import DataFlowGroupTree, ActionsTree
+from . trees import DataFlowGroupTree, ActionsTree, ParticleSystemTree
 
 def draw_menu(self, context):
     tree = context.space_data.node_tree
-    if not isinstance(tree, (DataFlowGroupTree, ActionsTree)):
+    if not isinstance(tree, (DataFlowGroupTree, ActionsTree, ParticleSystemTree)):
         return
 
     layout = self.layout
@@ -22,6 +22,10 @@ def draw_menu(self, context):
         insertNode(layout, "en_MoveViewNode", "Move View")
         insertNode(layout, "en_RotateViewNode", "Rotate View")
         insertNode(layout, "en_SetObjectAttributeNode", "Set Object Attribute")
+    elif isinstance(tree, ParticleSystemTree):
+        insertNode(layout, "en_ParticleTypeNode", "Particle Type")
+        layout.separator()
+        insertNode(layout, "en_PointEmitterNode", "Point Emitter")
 
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")
