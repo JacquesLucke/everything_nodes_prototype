@@ -54,5 +54,9 @@ class ControlFlowBaseSocket(Socket):
     input_link_limit = 0
     output_link_limit = 1
 
+    def draw(self, context, layout, node, text):
+        layout.label(text)
+
 class RelationalSocket(Socket):
-    pass
+    def draw(self, context, layout, node, text):
+        layout.label(text)

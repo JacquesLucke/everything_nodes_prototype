@@ -9,7 +9,8 @@ class ParticleTypeNode(DeclarativeNode, bpy.types.Node):
     type_name = StringProperty(name = "Particle Type Name", default = "Main")
 
     def create(self):
-        self.new_input("en_EmitterSocket", "Emitter")
+        self.new_input("en_ParticleEmitterSocket", "Emitter")
+        self.new_input("en_ParticleModifierSocket", "Modifiers")
 
     def draw(self, layout):
         layout.prop(self, "type_name", text = "", icon = "MOD_PARTICLES")

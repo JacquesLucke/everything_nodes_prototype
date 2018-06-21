@@ -1,4 +1,5 @@
 import bpy
+from . gravity import GravityNode
 from . move_view import MoveViewNode
 from . condition import ConditionNode
 from . float_math import FloatMathNode
@@ -21,6 +22,7 @@ from . set_object_attribute import SetObjectAttributeNode
 from . offset_vector_with_object import OffsetVectorWithObjectNode
 
 node_classes = [
+    GravityNode,
     MoveViewNode,
     FloatMathNode,
     ConditionNode,

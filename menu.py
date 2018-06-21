@@ -26,6 +26,8 @@ def draw_menu(self, context):
         insertNode(layout, "en_ParticleTypeNode", "Particle Type")
         layout.separator()
         insertNode(layout, "en_PointEmitterNode", "Point Emitter")
+        layout.separator()
+        insertNode(layout, "en_GravityNode", "Gravity")
 
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")

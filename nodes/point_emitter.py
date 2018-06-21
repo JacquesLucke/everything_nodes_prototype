@@ -12,7 +12,7 @@ class PointEmitterNode(ParticleEmitterNode, bpy.types.Node):
         self.new_input("en_FloatSocket", "Rate", "rate")
         self.new_input("en_FloatSocket", "Randomness", "randomness")
 
-        self.new_output("en_EmitterSocket", "Emitter")
+        self.new_output("en_ParticleEmitterSocket", "Emitter")
 
     def get_emit_code(self):
         yield "EMITTED = self.emit(location, rate, randomness, CURRENT_TIME, TIME_STEP, NEW_PARTICLE)"

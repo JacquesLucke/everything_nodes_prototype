@@ -3,16 +3,18 @@ import bpy
 from . float import FloatSocket
 from . vector import VectorSocket
 from . object import ObjectSocket
-from . emitter import EmitterSocket
 from . boolean import BooleanSocket
 from . control_flow import ControlFlowSocket
+from . particle_emitter import ParticleEmitterSocket
+from . particle_modifier import ParticleModifierSocket
 
 data_flow_socket_classes = [
     FloatSocket,
     VectorSocket,
     ObjectSocket,
-    EmitterSocket,
-    BooleanSocket
+    BooleanSocket,
+    ParticleEmitterSocket,
+    ParticleModifierSocket
 ]
 
 socket_classes = data_flow_socket_classes + [ControlFlowSocket]
