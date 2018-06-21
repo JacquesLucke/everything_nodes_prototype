@@ -34,6 +34,7 @@ def draw_menu(self, context):
         layout.separator()
         insertNode(layout, "en_ChangeParticleDirectionNode", "Change Direction")
         insertNode(layout, "en_KillParticleNode", "Kill Particle")
+        insertNode(layout, "en_ParticleInfoNode", "Particle Info")
 
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")
