@@ -25,11 +25,8 @@ class DependencyChecker:
         raise NotImplementedError()
 
 class NodeDriver(DependencyChecker, bpy.types.PropertyGroup):
-    def is_function(self, tree):
-        return isinstance(tree, DataFlowGroupTree) and tree.is_valid_function
-
     path = StringProperty()
-    data_flow_group = PointerProperty(type = bpy.types.NodeTree, poll = is_function)
+    data_flow_group = PointerProperty(type = DataFlowGroupTree)
 
     def get_dependencies(self):
         signature = self.data_flow_group.signature
