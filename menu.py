@@ -18,7 +18,6 @@ def draw_menu(self, context):
         layout.separator()
         insertNode(layout, "en_MoveObjectNode", "Move Object")
         insertNode(layout, "en_RotateObjectNode", "Rotate Object")
-        insertNode(layout, "en_ConditionNode", "Condition")
         insertNode(layout, "en_MoveViewNode", "Move View")
         insertNode(layout, "en_RotateViewNode", "Rotate View")
         insertNode(layout, "en_SetObjectAttributeNode", "Set Object Attribute")
@@ -36,6 +35,10 @@ def draw_menu(self, context):
         insertNode(layout, "en_ChangeParticleColorNode", "Change Color")
         insertNode(layout, "en_KillParticleNode", "Kill Particle")
         insertNode(layout, "en_ParticleInfoNode", "Particle Info")
+
+    if isinstance(tree, (ActionsTree, ParticleSystemTree)):
+        layout.separator()
+        insertNode(layout, "en_ConditionNode", "Condition")
 
     layout.separator()
     insertNode(layout, "en_FloatMathNode", "Float Math")
