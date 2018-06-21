@@ -145,7 +145,7 @@ def generate_function(tree):
     yield "    return " + output_string
 
 def iter_import_lines(tree):
-    yield "import bpy, mathutils"
+    yield "import bpy, mathutils, random"
     yield f"nodes = bpy.data.node_groups[{repr(tree.name)}].nodes"
 
 def find_possible_external_values(graph, values):
