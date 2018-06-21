@@ -98,7 +98,7 @@ def iter_forces_function_code(tree, forces):
         for line in force.get_force_code():
             yield "    " + replace_local_identifiers(line, force, inputs, variables)
         yield "    ALL_FORCES += FORCE"
-        yield "    return ALL_FORCES"
+    yield "    return ALL_FORCES"
 
 def get_data_flow_inputs(nodes):
     if isinstance(nodes, bpy.types.Node):
