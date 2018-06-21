@@ -10,6 +10,7 @@ from . vector_math import VectorMathNode
 from . move_object import MoveObjectNode
 from . group_output import GroupOutputNode
 from . point_emitter import PointEmitterNode
+from . kill_particle import KillParticleNode
 from . rotate_object import RotateObjectNode
 from . particle_type import ParticleTypeNode
 from . combine_vector import CombineVectorNode
@@ -35,6 +36,7 @@ node_classes = [
     VectorMathNode,
     GroupOutputNode,
     PointEmitterNode,
+    KillParticleNode,
     ParticleTypeNode,
     RotateObjectNode,
     KeyPressEventNode,

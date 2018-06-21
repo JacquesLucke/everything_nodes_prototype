@@ -3,6 +3,7 @@ from . base import NodeTree
 from mathutils import Vector
 from collections import defaultdict
 from .. utils.code import code_to_function
+from . actions_tree import generate_action_code
 from .. base_socket_types import DataFlowSocket
 from .. nodes.particle_force_base import ParticleForceNode
 from .. nodes.particle_emitter_base import ParticleEmitterNode
@@ -37,7 +38,7 @@ class ParticleSystemTree(NodeTree, bpy.types.NodeTree):
             event_triggers = get_event_trigger_nodes_for_particle_node(self.graph, node)
             event_function = get_events_function(self, event_triggers)
 
-            particle_type = ParticleType(emitter_function, forces_function)
+            particle_type = ParticleType(emitter_function, forces_function, event_function)
             particle_types.append(particle_type)
         return ParticleSystem(particle_types)
 
@@ -118,11 +119,11 @@ def get_event_trigger_nodes_for_particle_node(graph, node):
             event_triggers.add(linked_node)
     return event_triggers
 
-@code_to_function(verbose = True)
+@code_to_function()
 def get_events_function(tree, event_triggers):
     graph = tree.graph
     yield from iter_import_lines(tree)
-    yield "def main(PARTICLE):"
+    yield "def main(PARTICLE, CURRENT_TIME, TIME_STEP):"
     yield "    pass"
 
     sockets_to_calculate = get_data_flow_inputs(event_triggers)
@@ -134,8 +135,15 @@ def get_events_function(tree, event_triggers):
         inputs = get_data_flow_inputs(trigger)
         for line in trigger.get_trigger_code():
             yield "    " + replace_local_identifiers(line, trigger, inputs, variables)
-        yield "    if TRIGGERED: pass"
+        yield "    if TRIGGERED:"
+        yield "        pass"
+        for line in generate_action_code(graph, trigger.outputs[0]):
+            if "KILL" in line:
+                yield " " * (8 + line.index("KILL")) + "return False"
+            else:
+                yield "        " + line
 
+    yield "    return True"
 
 def get_data_flow_inputs(nodes):
     if isinstance(nodes, bpy.types.Node):
@@ -148,11 +156,22 @@ def get_data_flow_inputs(nodes):
                 sockets.add(socket)
     return sockets
 
+
+# Simulation
+#####################################
+
 def simulate_step(particle_system, state, current_time, time_step):
     for particle_type in particle_system.particle_types:
+        killed_particles = set()
         for particle in state.particles_by_type[particle_type]:
             particle.velocity += particle_type.forces_function(particle.location) * time_step
             particle.location += particle.velocity * time_step
+
+            still_alive = particle_type.events_function(particle, current_time, time_step)
+            if not still_alive:
+                killed_particles.add(particle)
+
+        state.particles_by_type[particle_type] -= killed_particles
 
         new_particles = particle_type.emitter_function(current_time, time_step)
         for particle in new_particles:
@@ -168,9 +187,10 @@ class ParticleSystem:
         self.particle_types = particle_types
 
 class ParticleType:
-    def __init__(self, emitter_function, forces_function):
+    def __init__(self, emitter_function, forces_function, events_function):
         self.emitter_function = emitter_function
         self.forces_function = forces_function
+        self.events_function = events_function
 
 class Particle:
     def __init__(self):
