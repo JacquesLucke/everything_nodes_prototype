@@ -1,5 +1,6 @@
 import bpy
 import time
+import traceback
 from bgl import *
 from bpy.props import *
 from .. trees import ParticleSystemTree
@@ -36,7 +37,12 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
             if event.type == "TIMER":
                 current_time = time.perf_counter()
                 time_step = current_time - self.last_time
-                simulate_step(self.particle_system, self.state, current_time, time_step)
+                try:
+                    simulate_step(self.particle_system, self.state, current_time, time_step)
+                except Exception as e:
+                    self.finish()
+                    traceback.print_exc()
+                    return {"CANCELLED"}
                 self.last_time = current_time
 
             for area in context.screen.areas:
