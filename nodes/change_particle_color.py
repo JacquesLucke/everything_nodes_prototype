@@ -17,7 +17,7 @@ class ChangeParticleColorNode(ImperativeNode, bpy.types.Node):
     def create(self):
         self.new_input("en_ControlFlowSocket", "Previous")
         self.new_input("en_ColorSocket", "Color", "color")
-        self.new_output("en_ControlFlowSocket", "Next")
+        self.new_output("en_ControlFlowSocket", "Next", "NEXT")
 
     def draw(self, layout):
         layout.prop(self, "mode", text = "")
@@ -29,3 +29,4 @@ class ChangeParticleColorNode(ImperativeNode, bpy.types.Node):
             yield "PARTICLE.color.r += (random.random() - 0.5) * color.r"
             yield "PARTICLE.color.g += (random.random() - 0.5) * color.g"
             yield "PARTICLE.color.b += (random.random() - 0.5) * color.b"
+        yield "NEXT"
