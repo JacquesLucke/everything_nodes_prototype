@@ -221,6 +221,13 @@ def simulate_step(particle_system, state, start_time, time_step):
                         killed_particles.add(particle)
                         break
 
+            removed_effects = set()
+            for effect in particle.effects:
+                removed = not effect(particle, current_time)
+                if removed:
+                    removed_effects.add(effect)
+            particle.effects -= removed_effects
+
         state.particles_by_type[particle_type] -= killed_particles
         new_particles = particle_type.emitter_function(start_time, time_step)
         new_particles_by_type_name[type_name].update(new_particles)
@@ -255,3 +262,4 @@ class Particle:
         self.velocity = Vector((0, 0, 0))
         self.born_time = 0
         self.color = Color((1, 1, 1))
+        self.effects = set()
