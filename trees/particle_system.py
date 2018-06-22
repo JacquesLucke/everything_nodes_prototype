@@ -70,14 +70,24 @@ def get_emitter_function(tree, emitters):
     for line in generate_function_code(graph, sockets_to_calculate, variables):
         yield "    " + line
 
-    yield "    ALL_NEW_PARTICLES = []"
+    yield "    __all_new_particles = set()"
     for emitter in emitters:
         inputs = get_data_flow_inputs(emitter)
         for line in emitter.get_emit_code():
             yield "    " + replace_local_identifiers(line, emitter, inputs, variables)
 
-        yield "    ALL_NEW_PARTICLES.extend(EMITTED)"
-    yield "    return ALL_NEW_PARTICLES"
+        yield "    __killed_again = set()"
+        yield "    for PARTICLE in EMITTED:"
+        yield "        pass"
+        for line in generate_action_code(graph, emitter.outputs["On Birth"]):
+            if "KILL" in line:
+                yield " " * (8 + line.index("KILL")) + "__killed_again.add(PARTICLE)"
+            else:
+                yield "        " + line
+
+        yield "    EMITTED -= __killed_again"
+        yield "    __all_new_particles.update(EMITTED)"
+    yield "    return __all_new_particles"
 
 
 # Forces

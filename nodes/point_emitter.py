@@ -12,6 +12,7 @@ class PointEmitterNode(ParticleEmitterNode, bpy.types.Node):
         self.new_input("en_FloatSocket", "Rate", "rate")
         self.new_input("en_FloatSocket", "Randomness", "randomness")
 
+        self.new_output("en_ControlFlowSocket", "On Birth")
         self.new_output("en_ParticleEmitterSocket", "Emitter")
 
     def get_emit_code(self):
@@ -20,13 +21,13 @@ class PointEmitterNode(ParticleEmitterNode, bpy.types.Node):
     def emit(self, location, rate, randomness, start_time, time_step, new_particle):
         amount = int(rate * (start_time + time_step)) - int(rate * start_time)
 
-        particles = []
+        particles = set()
         for _ in range(amount):
             particle = new_particle()
             offset = randomness * Vector((random() - 0.5, random() - 0.5, random() - 0.5))
             particle.location = location + offset
             particle.velocity = Vector((1, 0, 0))
             particle.born_time = start_time
-            particles.append(particle)
+            particles.add(particle)
 
         return particles
