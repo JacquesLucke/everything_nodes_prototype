@@ -21,7 +21,7 @@ class ChangeParticleDirectionNode(ImperativeNode, bpy.types.Node):
         if self.mode == "SET":
             self.new_input("en_VectorSocket", "Direction", "direction")
         elif self.mode == "RANDOMIZE":
-            self.new_input("en_FloatSocket", "Randomness", "randomness")
+            self.new_input("en_FloatSocket", "Strength", "strength")
         self.new_output("en_ControlFlowSocket", "Next", "NEXT")
 
     def draw(self, layout):
@@ -36,6 +36,6 @@ class ChangeParticleDirectionNode(ImperativeNode, bpy.types.Node):
             else:
                 yield "PARTICLE.velocity = direction"
         elif self.mode == "RANDOMIZE":
-            yield "_rotation = mathutils.Euler([(random.random() - 0.5) * randomness for _ in range(3)])"
+            yield "_rotation = mathutils.Euler([(random.random() - 0.5) * strength for _ in range(3)])"
             yield "PARTICLE.velocity = _rotation.to_matrix() * PARTICLE.velocity"
         yield "NEXT"

@@ -12,11 +12,14 @@ class ChangeParticleColorNode(ImperativeNode, bpy.types.Node):
     bl_label = "Change Color"
 
     mode = EnumProperty(name = "Mode", default = "SET",
-        items = mode_items, update = ImperativeNode.code_changed)
+        items = mode_items, update = ImperativeNode.refresh)
 
     def create(self):
         self.new_input("en_ControlFlowSocket", "Previous")
-        self.new_input("en_ColorSocket", "Color", "color")
+        if self.mode == "SET":
+            self.new_input("en_ColorSocket", "Color", "color")
+        elif self.mode == "RANDOMIZE":
+            self.new_input("en_FloatSocket", "Strength", "strength")
         self.new_output("en_ControlFlowSocket", "Next", "NEXT")
 
     def draw(self, layout):
@@ -26,7 +29,7 @@ class ChangeParticleColorNode(ImperativeNode, bpy.types.Node):
         if self.mode == "SET":
             yield "PARTICLE.color = color"
         elif self.mode == "RANDOMIZE":
-            yield "PARTICLE.color.r += (random.random() - 0.5) * color.r"
-            yield "PARTICLE.color.g += (random.random() - 0.5) * color.g"
-            yield "PARTICLE.color.b += (random.random() - 0.5) * color.b"
+            yield "PARTICLE.color.r = random.random() * strength + PARTICLE.color.r * (1 - strength)"
+            yield "PARTICLE.color.g = random.random() * strength + PARTICLE.color.g * (1 - strength)"
+            yield "PARTICLE.color.b = random.random() * strength + PARTICLE.color.b * (1 - strength)"
         yield "NEXT"
