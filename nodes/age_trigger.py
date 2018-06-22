@@ -19,9 +19,9 @@ class ParticleAgeTriggerNode(ParticleEventTriggerNode, bpy.types.Node):
         self.new_input("en_ParticleTypeSocket", "Particle Type")
 
         if self.mode == "AGE_REACHED":
-            self.new_input("en_FloatSocket", "Age", "trigger_age")
+            self.new_input("en_FloatSocket", "Age", "trigger_age", value = 1)
         elif self.mode == "INTERVAL":
-            self.new_input("en_FloatSocket", "Interval", "interval")
+            self.new_input("en_FloatSocket", "Interval", "interval", value = 1)
 
         self.new_output("en_ControlFlowSocket", "Next")
 

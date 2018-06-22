@@ -9,7 +9,7 @@ class PointEmitterNode(ParticleEmitterNode, bpy.types.Node):
 
     def create(self):
         self.new_input("en_VectorSocket", "Location", "location")
-        self.new_input("en_FloatSocket", "Rate", "rate")
+        self.new_input("en_FloatSocket", "Rate", "rate", value = 5)
         self.new_input("en_FloatSocket", "Randomness", "randomness")
 
         self.new_output("en_ControlFlowSocket", "On Birth")

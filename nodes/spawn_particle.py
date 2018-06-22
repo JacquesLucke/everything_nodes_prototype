@@ -19,7 +19,7 @@ class SpawnParticleNode(ImperativeNode, bpy.types.Node):
 
     def create(self):
         self.new_input("en_ControlFlowSocket", "Previous")
-        self.new_input("en_IntegerSocket", "Amount", "amount")
+        self.new_input("en_IntegerSocket", "Amount", "amount", value = 1)
         self.new_output("en_ControlFlowSocket", "Next", "NEXT")
         self.new_output("en_ControlFlowSocket", "New Particle Next", "NEW_PARTICLE_NEXT")
 

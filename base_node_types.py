@@ -38,15 +38,19 @@ class Node:
         state["property"] = socket.get_property()
         return state
 
-    def new_input(self, idname, name, identifier = None):
+    def new_input(self, idname, name, identifier = None, **kwargs):
         if identifier is None: identifier = name
         socket = self.inputs.new(idname, name, identifier)
         socket.link_limit = socket.input_link_limit
+        for attribute, value in kwargs.items():
+            setattr(socket, attribute, value)
 
-    def new_output(self, idname, name, identifier = None):
+    def new_output(self, idname, name, identifier = None, **kwargs):
         if identifier is None: identifier = name
         socket = self.outputs.new(idname, name, identifier)
         socket.link_limit = socket.output_link_limit
+        for attribute, value in kwargs.items():
+            setattr(socket, attribute, value)
 
     def draw_buttons(self, context, layout):
         self.draw(layout)

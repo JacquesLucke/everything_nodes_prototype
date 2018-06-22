@@ -8,7 +8,7 @@ class AttractNode(ParticleForceNode, bpy.types.Node):
 
     def create(self):
         self.new_input("en_VectorSocket", "Center", "center")
-        self.new_input("en_FloatSocket", "Strength", "strength")
+        self.new_input("en_FloatSocket", "Strength", "strength", value = 1)
         self.new_output("en_ParticleModifierSocket", "Force")
 
     def get_force_code(self):
