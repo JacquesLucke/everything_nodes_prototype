@@ -1,3 +1,4 @@
+import re
 import bpy
 from . base import NodeTree
 from .. utils.code import code_to_function
@@ -70,12 +71,17 @@ def generate_action_code(graph, socket):
         control_outputs = {s.identifier : s for s in node.outputs if isinstance(s, ControlFlowBaseSocket)}
 
         for line in node.get_code():
-            for identifer, out_socket in control_outputs.items():
-                if identifer in line:
-                    indentation = " " * line.index(identifer)
+            for identifier, out_socket in control_outputs.items():
+                if is_word_in_text(line, identifier):
+                    indentation = " " * line.index(identifier)
                     yield indentation + "pass"
                     for next_line in generate_action_code(graph, out_socket):
                         yield indentation + next_line
                     break
             else:
                 yield replace_local_identifiers(line, node, sockets_to_calculate, variables)
+
+def is_word_in_text(text, word):
+    pattern = r"\b{}\b".format(word)
+    match = re.search(pattern, text)
+    return match is not None
