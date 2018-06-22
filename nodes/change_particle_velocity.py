@@ -4,7 +4,8 @@ from .. base_node_types import ImperativeNode
 
 mode_items = [
     ("SET", "Set", ""),
-    ("RANDOMIZE", "Randomize", "")
+    ("RANDOMIZE", "Randomize", ""),
+    ("RELATIVE", "Relative", "")
 ]
 
 class ChangeParticleVelocityNode(ImperativeNode, bpy.types.Node):
@@ -20,6 +21,8 @@ class ChangeParticleVelocityNode(ImperativeNode, bpy.types.Node):
             self.new_input("en_FloatSocket", "Velocity", "velocity")
         elif self.mode == "RANDOMIZE":
             self.new_input("en_FloatSocket", "Strength", "strength", value = 1)
+        elif self.mode == "RELATIVE":
+            self.new_input("en_FloatSocket", "Factor", "factor")
         self.new_output("en_ControlFlowSocket", "Next", "NEXT")
 
     def draw(self, layout):
@@ -30,4 +33,6 @@ class ChangeParticleVelocityNode(ImperativeNode, bpy.types.Node):
                 yield "PARTICLE.velocity = PARTICLE.velocity.normalized() * velocity"
         elif self.mode == "RANDOMIZE":
             yield "PARTICLE.velocity *= (random.random() + 0.5) ** strength"
+        elif self.mode == "RELATIVE":
+            yield "PARTICLE.velocity *= factor"
         yield "NEXT"
