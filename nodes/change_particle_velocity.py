@@ -22,7 +22,7 @@ class ChangeParticleVelocityNode(ImperativeNode, bpy.types.Node):
         elif self.mode == "RANDOMIZE":
             self.new_input("en_FloatSocket", "Strength", "strength", value = 1)
         elif self.mode == "RELATIVE":
-            self.new_input("en_FloatSocket", "Factor", "factor")
+            self.new_input("en_FloatSocket", "Factor", "factor", value = 1)
         self.new_output("en_ControlFlowSocket", "Next", "NEXT")
 
     def draw(self, layout):
