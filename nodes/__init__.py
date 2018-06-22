@@ -24,6 +24,7 @@ from . get_parent_object import GetObjectParentNode
 from . object_transforms import ObjectTransformsNode
 from . set_object_attribute import SetObjectAttributeNode
 from . change_particle_color import ChangeParticleColorNode
+from . change_particle_velocity import ChangeParticleVelocityNode
 from . offset_vector_with_object import OffsetVectorWithObjectNode
 from . change_particle_direction import ChangeParticleDirectionNode
 
@@ -54,7 +55,8 @@ node_classes = [
     ParticleAgeTriggerNode,
     ChangeParticleColorNode,
     OffsetVectorWithObjectNode,
-    ChangeParticleDirectionNode
+    ChangeParticleVelocityNode,
+    ChangeParticleDirectionNode,
 ]
 
 def register():
