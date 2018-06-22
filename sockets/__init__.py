@@ -4,6 +4,7 @@ from . float import FloatSocket
 from . color import ColorSocket
 from . vector import VectorSocket
 from . object import ObjectSocket
+from . integer import IntegerSocket
 from . boolean import BooleanSocket
 from . control_flow import ControlFlowSocket
 from . particle_type import ParticleTypeSocket
@@ -15,6 +16,7 @@ data_flow_socket_classes = [
     ColorSocket,
     VectorSocket,
     ObjectSocket,
+    IntegerSocket,
     BooleanSocket,
     ParticleTypeSocket,
     ParticleEmitterSocket,
