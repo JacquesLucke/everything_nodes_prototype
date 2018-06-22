@@ -13,7 +13,7 @@ class InteractiveModeOperator(bpy.types.Operator):
             return {"CANCELLED"}
 
         save_current_state()
-
+        bpy.ops.en.modal_runner("INVOKE_DEFAULT")
         wm = context.window_manager
         wm.modal_handler_add(self)
         self._timer = wm.event_timer_add(0.01, context.window)
