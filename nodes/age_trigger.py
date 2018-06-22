@@ -29,8 +29,8 @@ class ParticleAgeTriggerNode(ParticleEventTriggerNode, bpy.types.Node):
         layout.prop(self, "mode", text = "")
 
     def get_trigger_code(self):
-        yield "_age = CURRENT_TIME - PARTICLE.born_time"
+        yield "_age = START_TIME - PARTICLE.born_time"
         if self.mode == "AGE_REACHED":
-            yield "TRIGGERED = _age >= trigger_age and _age - TIME_STEP < trigger_age"
+            yield "TRIGGER_TIME = trigger_age - _age"
         elif self.mode == "INTERVAL":
-            yield "TRIGGERED = _age // interval > (_age - TIME_STEP) // interval"
+            yield "TRIGGER_TIME = interval - _age % interval if _age > interval / 2 else -1"

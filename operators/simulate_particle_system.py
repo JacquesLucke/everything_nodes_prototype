@@ -38,9 +38,9 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
                 current_time = time.perf_counter()
                 time_step = current_time - self.last_time
                 try:
-                    simulate_step(self.particle_system, self.state, current_time, time_step)
+                    simulate_step(self.particle_system, self.state, self.last_time, time_step)
                 except Exception as e:
-                    self.finish()
+                    self.finish(context)
                     traceback.print_exc()
                     return {"CANCELLED"}
                 self.last_time = current_time
