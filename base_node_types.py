@@ -7,6 +7,37 @@ class Node:
     def create(self):
         pass
 
+    def refresh(self, context = None):
+        sockets_data = {}
+        for socket in self.sockets:
+            key = (socket.identifier, socket.is_output)
+            sockets_data[key] = self._get_socket_state(socket)
+
+        self.inputs.clear()
+        self.outputs.clear()
+
+        self.create()
+
+        for socket in self.sockets:
+            key = (socket.identifier, socket.is_output)
+            if key not in sockets_data:
+                continue
+            old_state = sockets_data[key]
+            if old_state["idname"] != socket.bl_idname:
+                continue
+
+            socket.set_property(old_state["property"])
+            for linked_socket in old_state["linked"]:
+                socket.link_with(linked_socket)
+
+
+    def _get_socket_state(self, socket):
+        state = {}
+        state["idname"] = socket.bl_idname
+        state["linked"] = self.id_data.graph.get_linked_sockets(socket)
+        state["property"] = socket.get_property()
+        return state
+
     def new_input(self, idname, name, identifier = None):
         if identifier is None: identifier = name
         socket = self.inputs.new(idname, name, identifier)

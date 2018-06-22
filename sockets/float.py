@@ -17,5 +17,11 @@ class FloatSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     def get_value(self):
         return self.value
 
+    def get_property(self):
+        return self.value
+
+    def set_property(self, value):
+        self.value = value
+
     def get_dependencies(self):
         yield AttributeDependency(self, "value")

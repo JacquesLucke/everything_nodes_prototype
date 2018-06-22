@@ -16,6 +16,18 @@ class Socket:
         else:
             return list(node.inputs).index(self)
 
+    def get_property(self):
+        return None
+
+    def set_property(self, value):
+        pass
+
+    def link_with(self, other):
+        if self.is_output:
+            self.id_data.links.new(other, self)
+        else:
+            self.id_data.links.new(self, other)
+
 class DataFlowSocket(Socket):
     input_link_limit = 1
     output_link_limit = 0

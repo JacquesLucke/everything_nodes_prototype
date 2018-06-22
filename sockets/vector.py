@@ -17,5 +17,11 @@ class VectorSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     def get_value(self):
         return self.value.copy()
 
+    def get_property(self):
+        return self.value.copy()
+
+    def set_property(self, value):
+        self.value = value
+
     def get_dependencies(self):
         yield AttributeDependency(self, "value")

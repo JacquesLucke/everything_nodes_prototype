@@ -11,23 +11,19 @@ class ParticleAgeTriggerNode(ParticleEventTriggerNode, bpy.types.Node):
     bl_idname = "en_ParticleAgeTriggerNode"
     bl_label = "Age Trigger"
 
-    def mode_changed(self, context = None):
-        if len(self.inputs) == 2:
-            self.inputs.remove(self.inputs[1])
+    mode = EnumProperty(name = "Mode", default = "AGE_REACHED",
+        update = ParticleEventTriggerNode.refresh,
+        items = mode_items)
+
+    def create(self):
+        self.new_input("en_ParticleTypeSocket", "Particle Type")
 
         if self.mode == "AGE_REACHED":
             self.new_input("en_FloatSocket", "Age", "trigger_age")
         elif self.mode == "INTERVAL":
             self.new_input("en_FloatSocket", "Interval", "interval")
 
-    mode = EnumProperty(name = "Mode", default = "AGE_REACHED",
-        update = mode_changed,
-        items = mode_items)
-
-    def create(self):
-        self.new_input("en_ParticleTypeSocket", "Particle Type")
         self.new_output("en_ControlFlowSocket", "Next")
-        self.mode_changed()
 
     def draw(self, layout):
         layout.prop(self, "mode", text = "")
