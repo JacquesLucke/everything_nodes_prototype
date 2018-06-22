@@ -27,7 +27,7 @@ class ChangeParticleVelocityNode(ImperativeNode, bpy.types.Node):
 
     def get_code(self):
         if self.mode == "SET":
-                yield "PARTICLE.velocity = PARTICLE.velocity.normalized() * strength"
+                yield "PARTICLE.velocity = PARTICLE.velocity.normalized() * velocity"
         elif self.mode == "RANDOMIZE":
             yield "PARTICLE.velocity *= (random.random() + 0.5) ** strength"
         yield "NEXT"
