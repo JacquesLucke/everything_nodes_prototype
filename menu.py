@@ -36,6 +36,7 @@ def draw_menu(self, context):
         insertNode(layout, "en_ChangeParticleColorNode", "Change Color")
         insertNode(layout, "en_KillParticleNode", "Kill Particle")
         insertNode(layout, "en_ParticleInfoNode", "Particle Info")
+        insertNode(layout, "en_SpawnParticleNode", "Spawn Particle")
 
     if isinstance(tree, (ActionsTree, ParticleSystemTree)):
         layout.separator()

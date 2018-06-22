@@ -16,6 +16,7 @@ from . rotate_object import RotateObjectNode
 from . particle_type import ParticleTypeNode
 from . combine_vector import CombineVectorNode
 from . on_update_event import OnUpdateEventNode
+from . spawn_particle import SpawnParticleNode
 from . key_press_event import KeyPressEventNode
 from . separate_vector import SeparateVectorNode
 from . age_trigger import ParticleAgeTriggerNode
@@ -44,6 +45,7 @@ node_classes = [
     KillParticleNode,
     ParticleTypeNode,
     RotateObjectNode,
+    SpawnParticleNode,
     KeyPressEventNode,
     OnUpdateEventNode,
     CombineVectorNode,

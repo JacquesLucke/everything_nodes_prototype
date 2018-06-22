@@ -27,8 +27,8 @@ class ParticleSystemTree(NodeTree, bpy.types.NodeTree):
         pass
 
     def get_particle_system(self):
-        particle_types = []
-        for node in self.graph.get_nodes_by_idname("en_ParticleTypeNode"):
+        particle_types = {}
+        for node in self.get_particle_type_nodes():
             emitters = get_emitter_nodes_for_particle_node(self.graph, node)
             emitter_function = get_emitter_function(self, emitters)
 
@@ -42,8 +42,11 @@ class ParticleSystemTree(NodeTree, bpy.types.NodeTree):
             particle_type = ParticleType(
                 emitter_function, forces_function,
                 find_trigger_function, event_handlers)
-            particle_types.append(particle_type)
+            particle_types[node.type_name] = particle_type
         return ParticleSystem(particle_types)
+
+    def get_particle_type_nodes(self):
+        return self.graph.get_nodes_by_idname("en_ParticleTypeNode")
 
 
 # Emitters
@@ -162,11 +165,17 @@ def get_event_handlers(tree, event_triggers):
 def get_event_handler(tree, event_trigger):
     graph = tree.graph
     yield from iter_import_lines(tree)
-    yield "def main(PARTICLE, CURRENT_TIME):"
+    yield "def main(PARTICLE, CURRENT_TIME, __particle_types, __new_particles, __particle_class):"
 
     for line in generate_action_code(graph, event_trigger.outputs[0]):
         if "KILL" in line:
             yield " " * (4 + line.index("KILL")) + "return False"
+        elif "SPAWN" in line:
+            _, type_name, variable_name = line.split(":")
+            indentation = " " * (4 + line.index("SPAWN"))
+            yield indentation + f"{variable_name} = __particle_class()"
+            yield indentation + f"{variable_name}.born_time = CURRENT_TIME"
+            yield indentation + f"__new_particles[{repr(type_name)}].add({variable_name})"
         else:
             yield "    " + line
 
@@ -188,12 +197,18 @@ def get_data_flow_inputs(nodes):
 #####################################
 
 def simulate_step(particle_system, state, start_time, time_step):
-    for particle_type in particle_system.particle_types:
+    new_particles_by_type_name = defaultdict(set)
+    for type_name, particle_type in particle_system.particle_types.items():
         killed_particles = set()
         for particle in state.particles_by_type[particle_type]:
             time_to_simulate = time_step
             current_time = start_time
+
+            counter = 0
             while time_to_simulate > 0:
+                if counter > 0:
+                    break
+                counter += 1
                 elapsed_time, event_handler_name = particle_type.find_trigger_function(particle, current_time, time_to_simulate)
 
                 run_modifiers(particle_type, particle, current_time, elapsed_time)
@@ -201,15 +216,18 @@ def simulate_step(particle_system, state, start_time, time_step):
                 time_to_simulate -= elapsed_time
 
                 if event_handler_name is not None:
-                    still_alive = particle_type.event_handlers[event_handler_name](particle, current_time)
+                    still_alive = particle_type.event_handlers[event_handler_name](particle, current_time, particle_system.particle_types, new_particles_by_type_name, Particle)
                     if not still_alive:
                         killed_particles.add(particle)
                         break
 
         state.particles_by_type[particle_type] -= killed_particles
-
         new_particles = particle_type.emitter_function(start_time, time_step)
-        state.particles_by_type[particle_type].update(new_particles)
+        new_particles_by_type_name[type_name].update(new_particles)
+
+    for type_name, particles in new_particles_by_type_name.items():
+        particle_type = particle_system.particle_types[type_name]
+        state.particles_by_type[particle_type].update(particles)
 
 def run_modifiers(particle_type, particle, start_time, time_step):
     particle.location += particle.velocity * time_step
