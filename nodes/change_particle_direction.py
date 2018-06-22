@@ -14,7 +14,7 @@ class ChangeParticleDirectionNode(ImperativeNode, bpy.types.Node):
     mode = EnumProperty(name = "Mode", default = "RANDOMIZE",
         items = mode_items, update = ImperativeNode.refresh)
 
-    keep_velocity = BoolProperty(name = "Keep Velocity")
+    keep_velocity = BoolProperty(name = "Keep Velocity", default = True)
 
     def create(self):
         self.new_input("en_ControlFlowSocket", "Previous")
@@ -36,6 +36,6 @@ class ChangeParticleDirectionNode(ImperativeNode, bpy.types.Node):
             else:
                 yield "PARTICLE.velocity = direction"
         elif self.mode == "RANDOMIZE":
-            yield "_rotation = mathutils.Euler([(random.random() - 0.5) * strength for _ in range(3)])"
+            yield "_rotation = mathutils.Euler([(random.random() - 0.5) * strength * math.pi * 2 for _ in range(3)])"
             yield "PARTICLE.velocity = _rotation.to_matrix() * PARTICLE.velocity"
         yield "NEXT"
