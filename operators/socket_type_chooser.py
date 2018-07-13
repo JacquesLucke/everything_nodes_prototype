@@ -1,6 +1,5 @@
 import bpy
 from bpy.props import *
-from .. sockets import get_data_flow_socket_classes
 from .. callback import execute_callback
 
 class ChooseSocketTypeOperator(bpy.types.Operator):
@@ -10,8 +9,6 @@ class ChooseSocketTypeOperator(bpy.types.Operator):
 
     def get_items(self, context):
         items = []
-        for cls in get_data_flow_socket_classes():
-            items.append((cls.bl_idname, cls.data_type, ""))
         return items
 
     selected_data_type = EnumProperty(items = get_items)

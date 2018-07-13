@@ -3,7 +3,7 @@ bl_info = {
     "description": "",
     "author":      "Jacques Lucke",
     "version":     (0, 0, 1),
-    "blender":     (2, 80, 0),
+    "blender":     (2, 79, 0),
     "location":    "Node Editor",
     "category":    "Node",
     "warning":     "This is just a prototype."
