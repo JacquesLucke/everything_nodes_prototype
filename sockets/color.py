@@ -8,7 +8,7 @@ class ColorSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     data_type = "Color"
     color = (0, 0, 0, 1)
 
-    value = FloatVectorProperty(name = "Value", default = [0.0, 0.0, 0.0],
+    value: FloatVectorProperty(name = "Value", default = [0.0, 0.0, 0.0],
         subtype = "COLOR", soft_min = 0.0, soft_max = 1.0,
         update = InternalDataFlowSocket.internal_data_changed)
 

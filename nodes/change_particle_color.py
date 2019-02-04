@@ -11,7 +11,7 @@ class ChangeParticleColorNode(ImperativeNode, bpy.types.Node):
     bl_idname = "en_ChangeParticleColorNode"
     bl_label = "Change Color"
 
-    mode = EnumProperty(name = "Mode", default = "SET",
+    mode: EnumProperty(name = "Mode", default = "SET",
         items = mode_items, update = ImperativeNode.refresh)
 
     def create(self):

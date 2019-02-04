@@ -5,7 +5,7 @@ class ParticlesPanel(bpy.types.Panel):
     bl_idname = "en_ParticlesPanel"
     bl_label = "Particle System"
     bl_space_type = "NODE_EDITOR"
-    bl_region_type = "TOOLS"
+    bl_region_type = "UI"
     bl_category = "Everything Nodes"
 
     @classmethod

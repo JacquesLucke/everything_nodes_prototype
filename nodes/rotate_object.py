@@ -12,7 +12,7 @@ class RotateObjectNode(ImperativeNode, bpy.types.Node):
     bl_idname = "en_RotateObjectNode"
     bl_label = "Rotate Object"
 
-    axis = EnumProperty(name = "Axis", default = "Z",
+    axis: EnumProperty(name = "Axis", default = "Z",
         items = axis_items, update = ImperativeNode.code_changed)
 
     def create(self):

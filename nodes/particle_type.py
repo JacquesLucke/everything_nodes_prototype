@@ -6,7 +6,7 @@ class ParticleTypeNode(DeclarativeNode, bpy.types.Node):
     bl_idname = "en_ParticleTypeNode"
     bl_label = "Particle Type"
 
-    type_name = StringProperty(name = "Particle Type Name", default = "Main")
+    type_name: StringProperty(name = "Particle Type Name", default = "Main")
 
     def create(self):
         self.new_input("en_ParticleEmitterSocket", "Emitter")

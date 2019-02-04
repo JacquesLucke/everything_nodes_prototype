@@ -11,7 +11,7 @@ class VectorMathNode(FunctionalNode, bpy.types.Node):
     bl_idname = "en_VectorMathNode"
     bl_label = "Vector Math"
 
-    operator = EnumProperty(name = "Operator", default = "ADD",
+    operator: EnumProperty(name = "Operator", default = "ADD",
         items = operator_items, update = FunctionalNode.code_changed)
 
     def create(self):

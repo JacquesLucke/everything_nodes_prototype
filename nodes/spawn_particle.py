@@ -14,7 +14,7 @@ class SpawnParticleNode(ImperativeNode, bpy.types.Node):
             items.append(("NONE", "NONE", ""))
         return list(sorted(items))
 
-    particle_type = EnumProperty(name = "Particle Type",
+    particle_type: EnumProperty(name = "Particle Type",
         items = get_particle_type_items)
 
     def create(self):

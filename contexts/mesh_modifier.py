@@ -11,12 +11,12 @@ modifier_type_items = [
 ]
 
 class NodeMeshModifier(DependencyChecker, bpy.types.PropertyGroup):
-    type = EnumProperty(name = "Modifier Type", default = "SINGLE_POINT",
+    type: EnumProperty(name = "Modifier Type", default = "SINGLE_POINT",
         items = modifier_type_items)
-    source_object = PointerProperty(type = bpy.types.Object, poll = lambda _, object: object.type == "MESH")
+    source_object: PointerProperty(type = bpy.types.Object, poll = lambda _, object: object.type == "MESH")
 
-    enabled = BoolProperty(name = "Enabled", default = False)
-    data_flow_group = PointerProperty(type = DataFlowGroupTree)
+    enabled: BoolProperty(name = "Enabled", default = False)
+    data_flow_group: PointerProperty(type = DataFlowGroupTree)
 
     def get_dependencies(self):
         return self.data_flow_group.get_dependencies({})

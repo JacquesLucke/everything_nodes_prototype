@@ -7,7 +7,7 @@ class OffsetVectorWithObjectNode(FunctionalNode, bpy.types.Node):
     bl_idname = "en_OffsetVectorWithObjectNode"
     bl_label = "Offset Vector With Object"
 
-    offset_object = PointerProperty(type = bpy.types.Object)
+    offset_object: PointerProperty(type = bpy.types.Object)
 
     def create(self):
         self.new_input("en_VectorSocket", "Vector", "vector_in")

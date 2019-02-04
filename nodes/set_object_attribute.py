@@ -6,7 +6,7 @@ class SetObjectAttributeNode(ImperativeNode, bpy.types.Node):
     bl_idname = "en_SetObjectAttributeNode"
     bl_label = "Set Object Attribute"
 
-    attribute = StringProperty(name = "Attribute")
+    attribute: StringProperty(name = "Attribute")
 
     def create(self):
         self.new_input("en_ControlFlowSocket", "Previous")

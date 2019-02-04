@@ -11,7 +11,7 @@ class ParticleAgeTriggerNode(ParticleEventTriggerNode, bpy.types.Node):
     bl_idname = "en_ParticleAgeTriggerNode"
     bl_label = "Age Trigger"
 
-    mode = EnumProperty(name = "Mode", default = "AGE_REACHED",
+    mode: EnumProperty(name = "Mode", default = "AGE_REACHED",
         update = ParticleEventTriggerNode.refresh,
         items = mode_items)
 

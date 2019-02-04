@@ -36,12 +36,12 @@ class DataFlowSocket(Socket):
 
     def draw(self, context, layout, node, text):
         if self.is_linked or self.is_output:
-            layout.label(text)
+            layout.label(text=text)
         else:
             self.draw_property(layout, text, node)
 
     def draw_property(self, layout, text, node):
-        layout.label(text)
+        layout.label(text=text)
 
     def get_value(self):
         raise NotImplementedError()
@@ -67,8 +67,8 @@ class ControlFlowBaseSocket(Socket):
     output_link_limit = 1
 
     def draw(self, context, layout, node, text):
-        layout.label(text)
+        layout.label(text=text)
 
 class RelationalSocket(Socket):
     def draw(self, context, layout, node, text):
-        layout.label(text)
+        layout.label(text=text)

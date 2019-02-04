@@ -8,7 +8,7 @@ class BooleanSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     data_type = "Boolean"
     color = (0, 0, 0, 1)
 
-    value = BoolProperty(name = "Value", default = 0.0,
+    value: BoolProperty(name = "Value", default = 0.0,
         update = InternalDataFlowSocket.internal_data_changed)
 
     def draw_property(self, layout, text, node):

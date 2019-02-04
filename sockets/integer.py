@@ -8,7 +8,7 @@ class IntegerSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     data_type = "Integer"
     color = (0, 0, 0, 1)
 
-    value = IntProperty(name = "Value", default = 0,
+    value: IntProperty(name = "Value", default = 0,
         update = InternalDataFlowSocket.internal_data_changed)
 
     def draw_property(self, layout, text, node):

@@ -4,7 +4,7 @@ from .. trees import DataFlowGroupTree
 from .. utils.objects import get_objects_in_scene
 
 class DependencyChecker:
-    last_dependency_state = StringProperty()
+    last_dependency_state: StringProperty()
 
     @property
     def dependencies_changed_since_last_check(self):
@@ -25,8 +25,8 @@ class DependencyChecker:
         raise NotImplementedError()
 
 class NodeDriver(DependencyChecker, bpy.types.PropertyGroup):
-    path = StringProperty()
-    data_flow_group = PointerProperty(type = DataFlowGroupTree)
+    path: StringProperty()
+    data_flow_group: PointerProperty(type = DataFlowGroupTree)
 
     def get_dependencies(self):
         signature = self.data_flow_group.signature

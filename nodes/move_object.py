@@ -6,7 +6,7 @@ class MoveObjectNode(ImperativeNode, bpy.types.Node):
     bl_idname = "en_MoveObjectNode"
     bl_label = "Move Object"
 
-    local_axis = BoolProperty(name = "Local Axis", default = False,
+    local_axis: BoolProperty(name = "Local Axis", default = False,
         update = ImperativeNode.code_changed)
 
     def create(self):

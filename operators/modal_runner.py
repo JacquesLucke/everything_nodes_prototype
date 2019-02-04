@@ -8,7 +8,7 @@ class ModalRunnerOperator(bpy.types.Operator):
 
     def invoke(self, context, event):
         wm = context.window_manager
-        self._timer = wm.event_timer_add(0.01, context.window)
+        self._timer = wm.event_timer_add(0.01, window = context.window)
         wm.modal_handler_add(self)
         return {"RUNNING_MODAL"}
 

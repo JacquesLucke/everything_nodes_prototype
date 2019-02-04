@@ -8,7 +8,7 @@ class ObjectSocket(ExternalDataFlowSocket, bpy.types.NodeSocket):
     data_type = "Object"
     color = (0, 0, 0, 1)
 
-    value = PointerProperty(type = bpy.types.Object,
+    value: PointerProperty(type = bpy.types.Object,
         update = ExternalDataFlowSocket.external_data_changed)
 
     def draw_property(self, layout, text, node):

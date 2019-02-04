@@ -11,7 +11,7 @@ class MouseClickEventNode(DeclarativeNode, bpy.types.Node):
     bl_idname = "en_MouseClickEventNode"
     bl_label = "Mouse Click Event"
 
-    mouse_button = EnumProperty(name = "Mouse Button", default = "LEFTMOUSE",
+    mouse_button: EnumProperty(name = "Mouse Button", default = "LEFTMOUSE",
         items = mouse_button_items)
 
     def create(self):

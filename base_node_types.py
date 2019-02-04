@@ -40,14 +40,14 @@ class Node:
 
     def new_input(self, idname, name, identifier = None, **kwargs):
         if identifier is None: identifier = name
-        socket = self.inputs.new(idname, name, identifier)
+        socket = self.inputs.new(idname, name, identifier = identifier)
         socket.link_limit = socket.input_link_limit
         for attribute, value in kwargs.items():
             setattr(socket, attribute, value)
 
     def new_output(self, idname, name, identifier = None, **kwargs):
         if identifier is None: identifier = name
-        socket = self.outputs.new(idname, name, identifier)
+        socket = self.outputs.new(idname, name, identifier = identifier)
         socket.link_limit = socket.output_link_limit
         for attribute, value in kwargs.items():
             setattr(socket, attribute, value)

@@ -14,8 +14,8 @@ class ChooseSocketTypeOperator(bpy.types.Operator):
             items.append((cls.bl_idname, cls.data_type, ""))
         return items
 
-    selected_data_type = EnumProperty(items = get_items)
-    callback = StringProperty()
+    selected_data_type: EnumProperty(items = get_items)
+    callback: StringProperty()
 
     def invoke(self, context, event):
         context.window_manager.invoke_search_popup(self)

@@ -1,8 +1,10 @@
 import bpy
+import gpu
+import bgl
 import time
 import traceback
-from bgl import *
 from bpy.props import *
+from gpu_extras.batch import batch_for_shader
 from .. trees import ParticleSystemTree
 from .. trees.particle_system import ParticleSystemState, simulate_step
 
@@ -17,7 +19,7 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
 
     def invoke(self, context, event):
         wm = context.window_manager
-        self._timer = wm.event_timer_add(0.016, context.window)
+        self._timer = wm.event_timer_add(0.016, window = context.window)
         wm.modal_handler_add(self)
 
         self.draw_handler = bpy.types.SpaceView3D.draw_handler_add(
@@ -64,15 +66,15 @@ class SimulateParticleSystemOperator(bpy.types.Operator):
         context.window_manager.event_timer_remove(self._timer)
 
     def draw_callback(self):
-        glPointSize(2)
-        glEnable(GL_POINT_SMOOTH)
-        glHint(GL_POINT_SMOOTH_HINT, GL_NICEST)
-
-        glBegin(GL_POINTS)
-        for particle_type, particles in self.state.particles_by_type.items():
+        positions = []
+        colors = []
+        for particles in self.state.particles_by_type.values():
             for particle in particles:
-                glColor3f(*particle.color)
-                glVertex3f(*particle.location)
-        glEnd()
+                positions.append(particle.location)
+                colors.append((*particle.color, 1))
 
-        glDisable(GL_POINT_SMOOTH)
+        shader = gpu.shader.from_builtin("3D_FLAT_COLOR")
+        batch = batch_for_shader(shader, 'POINTS', {"pos" : positions, "color": colors})
+
+        bgl.glPointSize(2)
+        batch.draw(shader)

@@ -16,7 +16,7 @@ class InteractiveModeOperator(bpy.types.Operator):
         bpy.ops.en.modal_runner("INVOKE_DEFAULT")
         wm = context.window_manager
         wm.modal_handler_add(self)
-        self._timer = wm.event_timer_add(0.01, context.window)
+        self._timer = wm.event_timer_add(0.01, window = context.window)
         self.setup_view(context)
         return {"RUNNING_MODAL"}
 

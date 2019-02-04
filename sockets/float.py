@@ -8,7 +8,7 @@ class FloatSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     data_type = "Float"
     color = (0, 0, 0, 1)
 
-    value = FloatProperty(name = "Value", default = 0.0,
+    value: FloatProperty(name = "Value", default = 0.0,
         update = InternalDataFlowSocket.internal_data_changed)
 
     def draw_property(self, layout, text, node):

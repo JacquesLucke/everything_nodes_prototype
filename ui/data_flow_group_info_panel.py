@@ -5,7 +5,7 @@ class DataFlowGroupInfoPanel(bpy.types.Panel):
     bl_idname = "en_InfoPanel"
     bl_label = "Info"
     bl_space_type = "NODE_EDITOR"
-    bl_region_type = "TOOLS"
+    bl_region_type = "UI"
     bl_category = "Everything Nodes"
 
     @classmethod
@@ -16,9 +16,9 @@ class DataFlowGroupInfoPanel(bpy.types.Panel):
         layout = self.layout
         tree = context.space_data.node_tree
 
-        layout.label(str(tree.is_valid_function))
+        layout.label(text=str(tree.is_valid_function))
         if tree.is_valid_function:
-            layout.label(str(tree.signature))
+            layout.label(text=str(tree.signature))
 
         layout.operator("en.analyse_tree")
         layout.operator("en.modal_runner")

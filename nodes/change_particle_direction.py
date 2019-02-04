@@ -11,12 +11,12 @@ class ChangeParticleDirectionNode(ImperativeNode, bpy.types.Node):
     bl_idname = "en_ChangeParticleDirectionNode"
     bl_label = "Change Direction"
 
-    mode = EnumProperty(name = "Mode", default = "RANDOMIZE",
+    mode: EnumProperty(name = "Mode", default = "RANDOMIZE",
         items = mode_items, update = ImperativeNode.refresh)
 
-    keep_velocity = BoolProperty(name = "Keep Velocity", default = True)
+    keep_velocity: BoolProperty(name = "Keep Velocity", default = True)
 
-    fade = BoolProperty(name = "Fade", default = False,
+    fade: BoolProperty(name = "Fade", default = False,
         update = ImperativeNode.refresh)
 
     def create(self):
@@ -45,7 +45,7 @@ class ChangeParticleDirectionNode(ImperativeNode, bpy.types.Node):
                 yield "_final_direction = direction"
         elif self.mode == "RANDOMIZE":
             yield "_rotation = mathutils.Euler([(random.random() - 0.5) * strength * math.pi * 2 for _ in range(3)])"
-            yield "_final_direction = _rotation.to_matrix() * PARTICLE.velocity"
+            yield "_final_direction = _rotation.to_matrix() @ PARTICLE.velocity"
 
         if self.fade:
             yield "PARTICLE.effects.add(self.get_change_direction_effect(PARTICLE.velocity, _final_direction, CURRENT_TIME, duration))"

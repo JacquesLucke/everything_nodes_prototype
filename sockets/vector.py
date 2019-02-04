@@ -8,7 +8,7 @@ class VectorSocket(InternalDataFlowSocket, bpy.types.NodeSocket):
     data_type = "Vector"
     color = (0, 0, 0, 1)
 
-    value = FloatVectorProperty(name = "Value", default = [0.0, 0.0, 0.0], subtype = "XYZ",
+    value: FloatVectorProperty(name = "Value", default = [0.0, 0.0, 0.0], subtype = "XYZ",
         update = InternalDataFlowSocket.internal_data_changed)
 
     def draw_property(self, layout, text, node):

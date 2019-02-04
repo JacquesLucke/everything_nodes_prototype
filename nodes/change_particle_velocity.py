@@ -12,7 +12,7 @@ class ChangeParticleVelocityNode(ImperativeNode, bpy.types.Node):
     bl_idname = "en_ChangeParticleVelocityNode"
     bl_label = "Change Velocity"
 
-    mode = EnumProperty(name = "Mode", default = "RANDOMIZE",
+    mode: EnumProperty(name = "Mode", default = "RANDOMIZE",
         items = mode_items, update = ImperativeNode.refresh)
 
     def create(self):
